@@ -1,4 +1,19 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * JeroenVermeulen_BlockCache
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this Module to
+ * newer versions in the future.
+ *
+ * @category    JeroenVermeulen
+ * @package     JeroenVermeulen_BlockCache
+ * @copyright   Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ */
+-->
+<!--suppress XmlUnboundNsPrefix -->
 <config>
     <modules>
         <JeroenVermeulen_BlockCache>

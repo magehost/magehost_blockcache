@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * JeroenVermeulen_BlockCache
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this Module to
+ * newer versions in the future.
+ *
+ * @category    JeroenVermeulen
+ * @package     JeroenVermeulen_BlockCache
+ * @copyright   Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ */
+-->
+<!--suppress XmlUnboundNsPrefix -->
+<config>
+    <sections>
+        <jeroenvermeulen_blockcache translate="label" module="jeroenvermeulen_blockcache">
+            <label>JeroenVermeulen BlockCache</label>
+            <tab>advanced</tab>
+            <sort_order>10</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <product_detail translate="label" module="jeroenvermeulen_blockcache">
+                    <label>Product Detail Page</label>
+                    <sort_order>200</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enable_cache translate="label comment">
+                            <label>Enable Caching</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </enable_cache>
+                        <lifetime translate="label">
+                            <label>Life Time (Seconds)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <validate>validate-greater-than-zero</validate>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </lifetime>
+                    </fields>
+                </product_detail>
+            </groups>
+        </jeroenvermeulen_blockcache>
+    </sections>
+</config>

@@ -1,7 +1,20 @@
 <?php
+/**
+ * JeroenVermeulen_BlockCache
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this Module to
+ * newer versions in the future.
+ *
+ * @category    JeroenVermeulen
+ * @package     JeroenVermeulen_BlockCache
+ * @copyright   Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ */
 
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 {
+    const CONFIG_SECTION = 'jeroenvermeulen_blockcache';
 
     /**
      * @param Varien_Event_Observer $observer
@@ -9,7 +22,8 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     function coreBlockAbstractToHtmlBefore( $observer )
     {
         $block = $observer->getBlock();
-        if ( is_a($block,'Mage_Catalog_Block_Product_Abstract') ) {  // @TODO make enable/disable configurable
+        if ( is_a($block,'Mage_Catalog_Block_Product_Abstract')
+             && Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_detail/enable_cache')) {
 
             $cacheTags = array( Mage_Core_Model_Store::CACHE_TAG,
                                 Mage_Catalog_Model_Category::CACHE_TAG,
@@ -34,9 +48,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
             $block->setCacheKey( implode('_', $cacheKeyData) );
             $block->setCacheTags( $cacheTags );
-            $block->setCacheLifetime( 3600 ); // 1 hour @TODO make configurable
+            $block->setCacheLifetime( intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/product_detail/lifetime')) );
         }
-        /* TODO if category block:
+        /* TODO if category block && Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_list/enable_cache')
         {
             $cacheTags = array( Mage_Core_Model_Store::CACHE_TAG,
                                 Mage_Catalog_Model_Category::CACHE_TAG,
