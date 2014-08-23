@@ -1,0 +1,9 @@
+## JeroenVermeulen_BlockCache Extension - Performance Improvement by better block caching in Magento CE
+
+# ---- Module enable XML
+# Magento Global Config        - File          - modules/JeroenVermeulen_BlockCache.xml
+app/etc/modules/JeroenVermeulen_BlockCache.xml                              app/etc/modules/JeroenVermeulen_BlockCache.xml
+
+# ---- Extension code dir
+# Magento Community Module     - Recursive Dir - JeroenVermeulen/BlockCache
+app/code/community/JeroenVermeulen/BlockCache/                              app/code/community/JeroenVermeulen/BlockCache/
