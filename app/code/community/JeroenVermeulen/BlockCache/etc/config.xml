@@ -17,10 +17,15 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>0.2.0</version>
+            <version>0.2.1</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
+        <blocks>
+            <jeroenvermeulen_blockcache>
+                <class>JeroenVermeulen_BlockCache_Block</class>
+            </jeroenvermeulen_blockcache>
+        </blocks>
         <models>
             <jeroenvermeulen_blockcache>
                 <class>JeroenVermeulen_BlockCache_Model</class>
