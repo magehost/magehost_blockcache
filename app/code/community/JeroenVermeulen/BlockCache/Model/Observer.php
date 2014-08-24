@@ -51,9 +51,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         if ( false !== $cacheLifeTime ) {
-            $block->setCacheKey( implode('_', $cacheKeyData) );
-            $block->setCacheTags( $cacheTags );
             $block->setCacheLifetime( $cacheLifeTime );
+            if ( null !== $cacheLifeTime ) {
+                $block->setCacheKey( implode('_', $cacheKeyData) );
+                $block->setCacheTags( $cacheTags );
+            }
         }
     }
 
