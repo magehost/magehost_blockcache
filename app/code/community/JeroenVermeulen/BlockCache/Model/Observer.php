@@ -27,7 +27,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $cacheLifeTime = false;
 
         if ( is_a($block,'Mage_Catalog_Block_Category_View') ) {
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_list/enable_cache') ) {
+            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
                 $currentCategory = Mage::registry('current_category');
                 $cacheKeyData    = $this->getBlockCacheKeyData( $block, $currentCategory );
                 $cacheTags       = $this->getBlockCacheTags( $currentCategory );

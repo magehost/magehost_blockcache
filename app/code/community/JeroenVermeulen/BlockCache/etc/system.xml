@@ -25,12 +25,14 @@
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
-                <product_list translate="label" module="jeroenvermeulen_blockcache">
+                <category_page translate="label" module="jeroenvermeulen_blockcache">
                     <label>Product List / Category Page</label>
                     <sort_order>100</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
+                    <frontend_type>text</frontend_type>
+                    <frontend_model>jeroenvermeulen_blockcache/adminhtml_system_config_form_fieldset_first</frontend_model>
                     <fields>
                         <enable_cache translate="label comment">
                             <label>Enable Caching</label>
@@ -51,15 +53,13 @@
                             <show_in_store>1</show_in_store>
                         </lifetime>
                     </fields>
-                </product_list>
+                </category_page>
                 <product_detail translate="label" module="jeroenvermeulen_blockcache">
                     <label>Product Detail Page</label>
                     <sort_order>200</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
-                    <frontend_type>text</frontend_type>
-                    <frontend_model>jeroenvermeulen_blockcache/adminhtml_system_config_form_fieldset_first</frontend_model>
                     <fields>
                         <enable_cache translate="label comment">
                             <label>Enable Caching</label>
