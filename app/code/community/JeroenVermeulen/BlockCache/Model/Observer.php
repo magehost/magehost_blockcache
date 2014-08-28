@@ -76,27 +76,36 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
              version_compare(Mage::getVersion(), '1.8', '>=') ) {
             /** @var Zend_Controller_Response_Http $response */
             $response   = $observer->getFront()->getResponse();
-            $html       = $response->getBody();
-            $newFormKey = Mage::getSingleton('core/session')->getFormKey();
-            $urlParam   = '/'.Mage_Core_Model_Url::FORM_KEY.'/';
-            $urlParamQ  = preg_quote($urlParam,'#');
-
-            // Fix links
-            $html = preg_replace('#'.$urlParamQ.'[a-zA-Z0-9]+#', $urlParam.$newFormKey, $html);
-
-            // Fix hidden inputs in forms
-            $matches = array();
-            if ( preg_match_all('#<input\s[^>]*name=[\'"]{0,1}form_key[\'"]{0,1}[^>]*>#i',$html,$matches,PREG_SET_ORDER) ) {
-                 foreach( $matches as $matchData ) {
-                     $oldTag = $matchData[0];
-                     $newTag = preg_replace('#value=[\'"]{0,1}[a-zA-Z0-9]+[\'"]{0,1}#i','value="'.$newFormKey.'"',$oldTag);
-                     if ( $oldTag != $newTag ) {
-                         $html = str_replace( $oldTag, $newTag, $html );
-                     }
-                 }
+            $headers    = $response->getHeaders();
+            $isHtml     = true; // Because it's default in PHP
+            foreach ( $headers as $header ) {
+                if ( 'Content-Type' == $header['name'] && false === strpos($header['value'],'text/html') ) {
+                    $isHtml = false;
+                    break;
+                }
             }
+            if ( $isHtml ) {
+                $html       = $response->getBody();
+                $newFormKey = Mage::getSingleton('core/session')->getFormKey();
+                $urlParam   = '/'.Mage_Core_Model_Url::FORM_KEY.'/';
+                $urlParamQ  = preg_quote($urlParam,'#');
 
-            $response->setBody($html);
+                // Fix links
+                $html = preg_replace('#'.$urlParamQ.'[a-zA-Z0-9]+#', $urlParam.$newFormKey, $html);
+
+                // Fix hidden inputs in forms
+                $matches = array();
+                if ( preg_match_all('#<input\s[^>]*name=[\'"]{0,1}form_key[\'"]{0,1}[^>]*>#i',$html,$matches,PREG_SET_ORDER) ) {
+                     foreach( $matches as $matchData ) {
+                         $oldTag = $matchData[0];
+                         $newTag = preg_replace('#value=[\'"]{0,1}[a-zA-Z0-9]+[\'"]{0,1}#i','value="'.$newFormKey.'"',$oldTag);
+                         if ( $oldTag != $newTag ) {
+                             $html = str_replace( $oldTag, $newTag, $html );
+                         }
+                     }
+                }
+                $response->setBody($html);
+            }
         }
     }
 
