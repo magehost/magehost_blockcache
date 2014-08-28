@@ -18,6 +18,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     const BLOCK_CACHE_TAG = 'BLOCK_HTML';
 
     /**
+     * Apply cache settings to block
      * @param Varien_Event_Observer $observer
      */
     function coreBlockAbstractToHtmlBefore( $observer )
@@ -67,6 +68,41 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Fix form_key in html coming from cache
+     * @param Varien_Event_Observer $observer
+     */
+    public function controllerFrontSendResponseBefore( $observer ) {
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_formkey_fix') &&
+             version_compare(Mage::getVersion(), '1.8', '>=') ) {
+            /** @var Zend_Controller_Response_Http $response */
+            $response   = $observer->getFront()->getResponse();
+            $html       = $response->getBody();
+            $newFormKey = Mage::getSingleton('core/session')->getFormKey();
+            $urlParam   = '/'.Mage_Core_Model_Url::FORM_KEY.'/';
+            $urlParamQ  = preg_quote($urlParam,'#');
+
+            // Fix links
+            $html = preg_replace('#'.$urlParamQ.'[a-zA-Z0-9]+#', $urlParam.$newFormKey, $html);
+
+            // Fix hidden inputs in forms
+            $matches = array();
+            if ( preg_match_all('#<input\s[^>]*name=[\'"]{0,1}form_key[\'"]{0,1}[^>]*>#i',$html,$matches,PREG_SET_ORDER) ) {
+                 foreach( $matches as $matchData ) {
+                     $oldTag = $matchData[0];
+                     $newTag = preg_replace('#value=[\'"]{0,1}[a-zA-Z0-9]+[\'"]{0,1}#i','value="'.$newFormKey.'"',$oldTag);
+                     if ( $oldTag != $newTag ) {
+                         $html = str_replace( $oldTag, $newTag, $html );
+                     }
+                 }
+            }
+
+            $response->setBody($html);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    /**
      * @param Mage_Core_Block_Template $block
      * @param Mage_Catalog_Model_Category|null $category
      * @param Mage_Catalog_Model_Product|null $product
@@ -109,4 +145,6 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
         return $result;
     }
+
+    // Mage::getSingleton('core/session')->getFormKey()
 }

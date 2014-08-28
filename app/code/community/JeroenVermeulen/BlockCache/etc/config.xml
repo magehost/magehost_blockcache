@@ -17,7 +17,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>0.3.4</version>
+            <version>0.4.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -48,10 +48,22 @@
                     </jeroenvermeulen_blockcache>
                 </observers>
             </core_block_abstract_to_html_before>
+            <controller_front_send_response_before>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>controllerFrontSendResponseBefore</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </controller_front_send_response_before>
         </events>
     </frontend>
     <default>
         <jeroenvermeulen_blockcache>
+            <general>
+                <enable_formkey_fix>1</enable_formkey_fix>
+            </general>
             <category_page>
                 <enable_cache>1</enable_cache>
                 <lifetime>604800</lifetime>
