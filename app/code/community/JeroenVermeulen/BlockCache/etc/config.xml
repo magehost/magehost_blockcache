@@ -17,7 +17,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>0.4.1</version>
+            <version>0.5.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -38,6 +38,13 @@
         </helpers>
     </global>
     <frontend>
+        <layout>
+            <updates>
+                <jeroenvermeulen_blockcache>
+                    <file>jeroenvermeulen/blockcache.xml</file>
+                </jeroenvermeulen_blockcache>
+            </updates>
+        </layout>
         <events>
             <core_block_abstract_to_html_before>
                 <observers>

@@ -14,5 +14,7 @@
 
 class JeroenVermeulen_BlockCache_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    // This class needs to exist to make translations possible.
+    public function getMessagesBlock() {
+        return Mage::app()->getLayout()->createBlock('jeroenvermeulen_blockcache/dummy_messages', 'dummy_messages');
+    }
 }

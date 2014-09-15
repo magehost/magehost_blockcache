@@ -7,3 +7,11 @@ app/etc/modules/JeroenVermeulen_BlockCache.xml                              app/
 # ---- Extension code dir
 # Magento Community Module     - Recursive Dir - JeroenVermeulen/BlockCache
 app/code/community/JeroenVermeulen/BlockCache/                              app/code/community/JeroenVermeulen/BlockCache/
+
+# ---- Frontend layout
+# Magento User Interface       - File          - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
+app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml      app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml
+
+# ---- Frontend layout
+# Magento User Interface       - Directory     - frontend/base/default/template/jeroenvermeulen/blockcache/
+app/design/frontend/base/default/template/jeroenvermeulen/blockcache/       app/design/frontend/base/default/template/jeroenvermeulen/blockcache/
