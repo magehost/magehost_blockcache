@@ -27,7 +27,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $block = $observer->getBlock();
         $cacheLifeTime = false;
 
-        if ( is_a($block,'Mage_Catalog_Block_Category_View') ) {
+        if ( $block instanceof Mage_Catalog_Block_Category_View ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
                 $currentCategory = Mage::registry('current_category');
                 $cacheKeyData    = $this->getBlockCacheKeyData( $block, $currentCategory );
@@ -45,7 +45,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheLifeTime   = null;
             }
         }
-        elseif ( is_a($block,'Mage_Catalog_Block_Product_View') ) {
+        elseif ( $block instanceof Mage_Catalog_Block_Product_View ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_detail/enable_cache') ) {
                 $currentCategory = Mage::registry('current_category');
                 $currentProduct  = Mage::registry('current_product');
