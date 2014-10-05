@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUndefinedClassInspection */
 /**
  * JeroenVermeulen_BlockCache
  *
@@ -15,7 +16,6 @@
 class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_First
     extends Mage_Adminhtml_Block_System_Config_Form_Fieldset
 {
-
     /**
      * Show explanation
      * @param Varien_Data_Form_Element_Abstract $element

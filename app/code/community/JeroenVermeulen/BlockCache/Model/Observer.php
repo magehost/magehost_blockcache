@@ -7,9 +7,9 @@
  * Do not edit or add to this file if you wish to upgrade this Module to
  * newer versions in the future.
  *
- * @category    JeroenVermeulen
- * @package     JeroenVermeulen_BlockCache
- * @copyright   Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ * @category     JeroenVermeulen
+ * @package      JeroenVermeulen_BlockCache
+ * @copyright    Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
  */
 
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
@@ -24,8 +24,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     function coreBlockAbstractToHtmlBefore( $observer )
     {
         /** @var Mage_Core_Block_Template $block */
-        $block = $observer->getBlock();
+        /** @noinspection PhpUndefinedMethodInspection */
+        $block         = $observer->getBlock();
         $cacheLifeTime = false;
+        $cacheTags     = array();
+        $cacheKeyData  = array();
 
         if ( $block instanceof Mage_Catalog_Block_Category_View ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
@@ -35,9 +38,13 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/category_page/lifetime'));
                 $catalogSession = Mage::getSingleton('catalog/session');
                 if ( $catalogSession ) {
+                    /** @noinspection PhpUndefinedMethodInspection */
                     $cacheKeyData[] = 'so'.strval($catalogSession->getSortOrder());
+                    /** @noinspection PhpUndefinedMethodInspection */
                     $cacheKeyData[] = 'sd'.strval($catalogSession->getSortDirection());
+                    /** @noinspection PhpUndefinedMethodInspection */
                     $cacheKeyData[] = 'dm'.strval($catalogSession->getDisplayMode());
+                    /** @noinspection PhpUndefinedMethodInspection */
                     $cacheKeyData[] = 'lp'.strval($catalogSession->getLimitPage());
                 }
             } else {
@@ -59,9 +66,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         if ( false !== $cacheLifeTime ) {
+            /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheLifetime( $cacheLifeTime );
             if ( null !== $cacheLifeTime ) {
+                /** @noinspection PhpUndefinedMethodInspection */
                 $block->setCacheKey( implode('_', $cacheKeyData) );
+                /** @noinspection PhpUndefinedMethodInspection */
                 $block->setCacheTags( $cacheTags );
             }
         }
@@ -75,6 +85,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_formkey_fix') &&
              version_compare(Mage::getVersion(), '1.8', '>=') ) {
             /** @var Zend_Controller_Response_Http $response */
+            /** @noinspection PhpUndefinedMethodInspection */
             $response   = $observer->getFront()->getResponse();
             $headers    = $response->getHeaders();
             $isHtml     = true; // Because it's default in PHP
@@ -86,6 +97,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             }
             if ( $isHtml ) {
                 $html       = $response->getBody();
+                /** @noinspection PhpUndefinedMethodInspection */
                 $newFormKey = Mage::getSingleton('core/session')->getFormKey();
                 $urlParam   = '/'.Mage_Core_Model_Url::FORM_KEY.'/';
                 $urlParamQ  = preg_quote($urlParam,'#');
@@ -118,10 +130,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @return array;
      */
     protected function getBlockCacheKeyData( $block, $category=null, $product=null ) {
+        /** @noinspection PhpUndefinedMethodInspection */
         $currentUrl = Mage::helper('core/url')->getCurrentUrl();
         $currentUrl = preg_replace('/(\?|&)(utm_source|utm_medium|utm_campaign|gclid|cx|ie|cof|siteurl)=[^&]+/ms','$1',$currentUrl);
         $currentUrl = str_replace('?&','?',$currentUrl);
-        $result = array( $currentUrl, // covers secure, storecode, url param, page nr
+        /** @noinspection PhpUndefinedMethodInspection */
+        $result = array( $currentUrl, // covers secure, store code, url param, page nr
                          get_class( $block ),
                          $block->getTemplate(),
                          Mage::getSingleton('customer/session')->getCustomerGroupId(),
@@ -155,5 +169,4 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         return $result;
     }
 
-    // Mage::getSingleton('core/session')->getFormKey()
 }

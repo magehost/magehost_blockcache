@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/**
- * JeroenVermeulen_BlockCache
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this Module to
- * newer versions in the future.
- *
- * @category    JeroenVermeulen
- * @package     JeroenVermeulen_BlockCache
- * @copyright   Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
- */
+  JeroenVermeulen_BlockCache
+
+  DISCLAIMER
+
+  Do not edit or add to this file if you wish to upgrade this Module to
+  newer versions in the future.
+
+  @category     JeroenVermeulen
+  @package      JeroenVermeulen_BlockCache
+  @copyright    Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
 -->
 <!--suppress XmlUnboundNsPrefix -->
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>0.5.1</version>
+            <version>0.6.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -74,10 +72,12 @@
             <category_page>
                 <enable_cache>1</enable_cache>
                 <lifetime>604800</lifetime>
+                <enable_messages_fix>1</enable_messages_fix>
             </category_page>
             <product_detail>
                 <enable_cache>1</enable_cache>
                 <lifetime>604800</lifetime>
+                <enable_messages_fix>1</enable_messages_fix>
             </product_detail>
         </jeroenvermeulen_blockcache>
     </default>

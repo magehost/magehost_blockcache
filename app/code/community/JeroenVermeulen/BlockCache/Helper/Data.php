@@ -14,6 +14,9 @@
 
 class JeroenVermeulen_BlockCache_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * @return JeroenVermeulen_BlockCache_Block_Dummy_Messages
+     */
     public function getMessagesBlock() {
         return Mage::app()->getLayout()->createBlock('jeroenvermeulen_blockcache/dummy_messages', 'dummy_messages');
     }
