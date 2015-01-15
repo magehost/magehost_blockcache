@@ -34,6 +34,44 @@
                 <class>JeroenVermeulen_BlockCache_Helper</class>
             </jeroenvermeulen_blockcache>
         </helpers>
+        <events>
+            <application_clean_cache>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </application_clean_cache>
+            <clean_media_cache_after>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </clean_media_cache_after>
+            <clean_catalog_images_cache_after>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </clean_catalog_images_cache_after>
+            <core_clean_cache>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </core_clean_cache>
+        </events>
     </global>
     <frontend>
         <layout>
@@ -64,10 +102,42 @@
             </controller_front_send_response_before>
         </events>
     </frontend>
+    <adminhtml>
+        <events>
+            <adminhtml_cache_flush_all>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </adminhtml_cache_flush_all>
+            <adminhtml_cache_flush_system>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </adminhtml_cache_flush_system>
+            <adminhtml_cache_refresh_type>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>cacheCleanEvent</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </adminhtml_cache_refresh_type>
+        </events>
+    </adminhtml>
     <default>
         <jeroenvermeulen_blockcache>
             <general>
                 <enable_formkey_fix>1</enable_formkey_fix>
+                <enable_flush_log>0</enable_flush_log>
             </general>
             <category_page>
                 <enable_cache>1</enable_cache>

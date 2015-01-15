@@ -14,8 +14,9 @@
 
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 {
-    const CONFIG_SECTION = 'jeroenvermeulen_blockcache';
+    const CONFIG_SECTION  = 'jeroenvermeulen_blockcache';
     const BLOCK_CACHE_TAG = 'BLOCK_HTML';
+    const FLUSH_LOG_FILE  = 'cache_flush.log';
 
     /**
      * Apply cache settings to block
@@ -119,6 +120,40 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $response->setBody($html);
             }
         }
+    }
+
+    public function cacheCleanEvent( $observer ) {
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_flush_log') ) {
+            $message = 'Cache flush.';
+            $event = $observer->getEvent();
+            if ( $event ) {
+                $message .= '  Event:' . $event->getName();
+            }
+            $tags = $observer->getTags();
+            if ( is_string($tags) ) {
+                if ( empty($tags) ) {
+                    $tags[] = '[ALL]';
+                }
+                $message .= '  Tags:' . $tags;
+            }
+            if ( is_array($tags) ) {
+                if ( empty($tags) ) {
+                    $tags[] = '[ALL]';
+                }
+                $message .= '  Tags:' . implode(',', $tags);
+            }
+            $type = $observer->getType();
+            if ( is_string($type) ) {
+                $message .= '  Type:' . $type;
+            }
+
+            $request = Mage::app()->getRequest();
+            if ( $request ) {
+                $message .= '  Action:' . $request->getModuleName().'/'.$request->getControllerName().'/'.$request->getActionName();
+            }
+            Mage::log( $message, Zend_Log::INFO, self::FLUSH_LOG_FILE );
+        }
+
     }
 
     ////////////////////////////////////////////////////////////////////////////
