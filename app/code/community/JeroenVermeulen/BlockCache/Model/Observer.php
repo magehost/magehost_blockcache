@@ -122,35 +122,42 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * Observer for cache flush logging, processes several types of cache flush events
+     * @param Varien_Event_Observer $observer
+     */
     public function cacheCleanEvent( $observer ) {
         if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_flush_log') ) {
+
             $message = 'Cache flush.';
-            $event = $observer->getEvent();
-            if ( $event ) {
+            if ( $event = $observer->getEvent() ) {
                 $message .= '  Event:' . $event->getName();
             }
+
             $tags = $observer->getTags();
             if ( is_string($tags) ) {
-                if ( empty($tags) ) {
-                    $tags[] = '[ALL]';
-                }
-                $message .= '  Tags:' . $tags;
+                $tags = array( $tags );
             }
+
             if ( is_array($tags) ) {
-                if ( empty($tags) ) {
+                if ( empty($tags) || '' == trim(implode('',$tags)) ) {
                     $tags[] = '[ALL]';
                 }
                 $message .= '  Tags:' . implode(',', $tags);
             }
-            $type = $observer->getType();
-            if ( is_string($type) ) {
+
+            if ( $type = $observer->getType() ) {
                 $message .= '  Type:' . $type;
             }
 
-            $request = Mage::app()->getRequest();
-            if ( $request ) {
-                $message .= '  Action:' . $request->getModuleName().'/'.$request->getControllerName().'/'.$request->getActionName();
+            if ( $request = Mage::app()->getRequest() ) {
+                if ( $action = $request->getActionName() ) {
+                    $message .= '  Action:' . $request->getModuleName().'/'.$request->getControllerName().'/'.$action;
+                } elseif( $pathInfo = $request->getPathInfo() ) {
+                    $message .= ' PathInfo:' . $pathInfo;
+                }
             }
+
             Mage::log( $message, Zend_Log::INFO, self::FLUSH_LOG_FILE );
         }
 
