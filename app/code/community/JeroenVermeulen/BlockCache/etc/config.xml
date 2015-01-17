@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>0.7.2</version>
+            <version>0.8.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -138,16 +138,20 @@
             <general>
                 <enable_formkey_fix>1</enable_formkey_fix>
                 <enable_flush_log>0</enable_flush_log>
+                <enable_flush_translation_change>1</enable_flush_translation_change>
             </general>
             <category_page>
                 <enable_cache>1</enable_cache>
                 <lifetime>604800</lifetime>
                 <enable_messages_fix>1</enable_messages_fix>
+                <enable_flush_category_change>1</enable_flush_category_change>
             </category_page>
             <product_detail>
                 <enable_cache>1</enable_cache>
                 <lifetime>604800</lifetime>
                 <enable_messages_fix>1</enable_messages_fix>
+                <enable_flush_product_change>1</enable_flush_product_change>
+                <enable_flush_category_change>1</enable_flush_category_change>
             </product_detail>
         </jeroenvermeulen_blockcache>
     </default>

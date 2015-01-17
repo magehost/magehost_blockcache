@@ -51,6 +51,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_flush_log>
+                        <enable_flush_translation_change translate="label">
+                            <label>Enable flush on translation change</label>
+                            <comment>You need to flush the 'Blocks HTML output' cache after switching on.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enable_flush_translation_change>
                     </fields>
                 </general>
                 <category_page translate="label" module="jeroenvermeulen_blockcache">
@@ -63,11 +73,11 @@
                         <enable_cache translate="label comment">
                             <label>Enable Caching</label>
                             <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
                         </enable_cache>
                         <lifetime translate="label">
                             <label>Life Time (Seconds)</label>
@@ -93,6 +103,19 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </enable_messages_fix>
+                        <enable_flush_category_change translate="label">
+                            <label>Enable flush on category change</label>
+                            <comment>You need to flush the 'Blocks HTML output' cache after switching on.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <enable_cache>1</enable_cache>
+                            </depends>
+                        </enable_flush_category_change>
                     </fields>
                 </category_page>
                 <product_detail translate="label" module="jeroenvermeulen_blockcache">
@@ -135,6 +158,32 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </enable_messages_fix>
+                        <enable_flush_product_change translate="label">
+                            <label>Enable flush on product change</label>
+                            <comment>You need to flush the 'Blocks HTML output' cache after switching on.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <enable_cache>1</enable_cache>
+                            </depends>
+                        </enable_flush_product_change>
+                        <enable_flush_category_change translate="label">
+                            <label>Enable flush on category change</label>
+                            <comment>You need to flush the 'Blocks HTML output' cache after switching on.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <enable_cache>1</enable_cache>
+                            </depends>
+                        </enable_flush_category_change>
                     </fields>
                 </product_detail>
             </groups>
