@@ -55,7 +55,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                     $cacheKeyData[] = 'lp'.strval($catalogSession->getLimitPage());
                 }
                 if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
-                    $keyPrefix .= 'Cat'.$currentCategory->getId().'_';
+                    $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
                 }
             } else {
                 // Caching of this block is disabled in config
@@ -78,10 +78,10 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheTags       = $this->getBlockCacheTags( $tagsCategory, $tagsProduct );
                 $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/product_detail/lifetime'));
                 if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
-                    $keyPrefix .= 'Cat'.$currentCategory->getId().'_';
+                    $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
                 }
                 if ( $currentProduct instanceof Mage_Catalog_Model_Product ) {
-                    $keyPrefix .= 'Prd'.$currentProduct->getId().'_';
+                    $keyPrefix .= 'PRD'.$currentProduct->getId().'_';
                 }
             } else {
                 // Caching of this block is disabled in config
@@ -93,11 +93,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheKeyData = $this->getBlockCacheKeyData( $block, $store );
                 $cacheTags    = $this->getBlockCacheTags();
                 $cmsPage      = Mage::getSingleton( 'cms/page' );
-                if ($cmsPage instanceof Mage_Cms_Model_Page && $cmsPage->getId()) {
+                if ( $cmsPage instanceof Mage_Cms_Model_Page ) {
                     if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_page/enable_flush_cms_page_change') ) {
                         $cacheTags[] = Mage_Cms_Model_Page::CACHE_TAG . '_' . $cmsPage->getId();
                     }
-                    $keyPrefix .= 'CmsP'.$cmsPage->getId().'_';
+                    $keyPrefix .= 'CMSP'.$cmsPage->getId().'_';
                 }
                 $cacheLifeTime = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/cms_page/lifetime' ) );
             }
@@ -112,7 +112,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                     $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
                 }
                 $cacheLifeTime  = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/cms_block/lifetime' ) );
-                $keyPrefix .= 'CmsB_';
+                $keyPrefix .= 'CMSB_';
             }
         }
 
@@ -236,7 +236,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         if ( $category instanceof Mage_Catalog_Model_Category ) {
             $result[] = 'c'.$category->getId();
         }
-        if ( $product instanceof Mage_Catalog_Model_Category ) {
+        if ( $product instanceof Mage_Catalog_Model_Product ) {
             $result[] = 'p'.$product->getId();
         }
         return $result;
@@ -252,10 +252,10 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_flush_translation_change') ) {
             $result[] = Mage_Core_Model_Translate::CACHE_TAG;
         }
-        if ( !empty($category) ) {
+        if ( $category instanceof Mage_Catalog_Model_Category ) {
             $result[] = Mage_Catalog_Model_Category::CACHE_TAG.'_'.$category->getId();
         }
-        if ( !empty($product) ) {
+        if ( $product instanceof Mage_Catalog_Model_Product ) {
             $result[] = Mage_Catalog_Model_Product::CACHE_TAG.'_'.$product->getId();
         }
         return $result;
