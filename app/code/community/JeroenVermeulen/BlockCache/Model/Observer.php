@@ -121,7 +121,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $block->setCacheLifetime( $cacheLifeTime );
             if ( null !== $cacheLifeTime ) {
                 /** @noinspection PhpUndefinedMethodInspection */
-                $block->setCacheKey( $keyPrefix . md5( implode('|', $cacheKeyData) ) );
+                $block->setCacheKey( $keyPrefix . md5( implode('|', $cacheKeyData) ) . implode('|', $cacheTags) );
                 /** @noinspection PhpUndefinedMethodInspection */
                 $block->setCacheTags( $cacheTags );
             }
@@ -253,10 +253,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $result[] = Mage_Core_Model_Translate::CACHE_TAG;
         }
         if ( $category instanceof Mage_Catalog_Model_Category ) {
-            $result[] = Mage_Catalog_Model_Category::CACHE_TAG.'_'.$category->getId();
+            $result = array_merge( $result, $category->getCacheIdTags() );
         }
         if ( $product instanceof Mage_Catalog_Model_Product ) {
             $result[] = Mage_Catalog_Model_Product::CACHE_TAG.'_'.$product->getId();
+            $result = array_merge( $result, $product->getCacheIdTags() );
         }
         return $result;
     }

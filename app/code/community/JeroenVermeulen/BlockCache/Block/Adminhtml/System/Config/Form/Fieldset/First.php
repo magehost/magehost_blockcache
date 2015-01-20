@@ -22,8 +22,8 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
      * @return string
      */
     protected function _getHeaderHtml($element) {
-        $result = sprintf( '<p>%s</p>',
-                           $this->__( 'These settings have direct affect, no need to flush the cache.' ) );
+//        $result = sprintf( '<p>%s</p>',
+//                           $this->__( 'These settings have direct affect, no need to flush the cache.' ) );
         $result .= parent::_getHeaderHtml( $element );
         return $result;
     }

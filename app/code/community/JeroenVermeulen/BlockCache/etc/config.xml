@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>0.9.1</version>
+            <version>0.10.0b</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -23,6 +23,28 @@
             <jeroenvermeulen_blockcache>
                 <class>JeroenVermeulen_BlockCache_Block</class>
             </jeroenvermeulen_blockcache>
+            <catalog>
+                <rewrite>
+                    <category_view>JeroenVermeulen_BlockCache_Block_Catalog_Category_View</category_view>
+                    <product_view>JeroenVermeulen_BlockCache_Block_Catalog_Product_View</product_view>
+                </rewrite>
+            </catalog>
+            <emico_tweakwise>
+                <rewrite>
+                    <catalog_category_view>JeroenVermeulen_BlockCache_Block_Tweakwise_Catalog_Category_View</catalog_category_view>
+                </rewrite>
+            </emico_tweakwise>
+            <anylamp_catalog>
+                <rewrite>
+                    <product_view>JeroenVermeulen_BlockCache_Block_Catalog_Product_View</product_view>
+                    <product_view>JeroenVermeulen_BlockCache_Block_Anylamp_Catalog_Product_View</product_view>
+                </rewrite>
+            </anylamp_catalog>
+            <anylamp_discount>
+                <rewrite>
+                    <catalog_product_view_tierprice>JeroenVermeulen_BlockCache_Block_Discount_Catalog_Product_View_Tierprice</catalog_product_view_tierprice>
+                </rewrite>
+            </anylamp_discount>
         </blocks>
         <models>
             <jeroenvermeulen_blockcache>
