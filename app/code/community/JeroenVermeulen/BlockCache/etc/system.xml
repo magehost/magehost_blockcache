@@ -240,7 +240,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </cms_block>
-                        <translation translate="label">
+                        <translate translate="label">
                             <label>On Translation change</label>
                             <frontend_type>select</frontend_type>
                             <source_model>jeroenvermeulen_blockcache/system_config_source_cacheflushes</source_model>
@@ -248,7 +248,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </translation>
+                        </translate>
                     </fields>
                 </flushes>
             </groups>

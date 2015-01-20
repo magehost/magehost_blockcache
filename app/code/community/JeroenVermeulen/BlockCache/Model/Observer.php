@@ -178,7 +178,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $prefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         $oldTags = $tags;
 
-        $filters = array('catalog_product','catalog_category','cms_page','cms_block','translation');
+        $filters = array('catalog_product','catalog_category','cms_page','cms_block','translate');
         $changed = false;
         foreach( $filters as $filter ) {
             $filterTag = strtoupper($filter);
@@ -265,15 +265,15 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     protected function logTags( $tags, $prefix ) {
-        $cleanTags = array();
-        $preg = '/^'.preg_quote($prefix,'/').'/';
-        foreach ( $tags as $tag ) {
-            $cleanTags[] = preg_replace( $preg, '', $tag );
-        }
         if ( empty($tags) ) {
             return '-empty-';
         } else {
-            return implode(',', $tags);
+            $preg = '/^'.preg_quote($prefix,'/').'/';
+            $cleanTags = array();
+            foreach ( $tags as $tag ) {
+                $cleanTags[] = preg_replace( $preg, '', $tag );
+            }
+            return implode(',', $cleanTags);
         }
     }
 }
