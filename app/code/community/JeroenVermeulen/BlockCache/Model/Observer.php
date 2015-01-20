@@ -172,45 +172,47 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
-    /**
-     * Observer for cache flush logging, processes several types of cache flush events
-     * @param Varien_Event_Observer $observer
-     */
-    public function cacheCleanEvent( $observer ) {
-        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_flush_log') ) {
+    public function cleanBackendCache( $observer ) {
+        $transport = $observer->getTransport();
+        $tags = $transport->getTags();
+        $prefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
+        $oldTags = $tags;
 
-            $message = 'Cache flush.';
-            if ( $event = $observer->getEvent() ) {
-                $message .= '  Event:' . $event->getName();
-            }
-
-            $tags = $observer->getTags();
-            if ( is_string($tags) ) {
-                $tags = array( $tags );
-            }
-
-            if ( is_array($tags) ) {
-                if ( empty($tags) || '' == trim(implode('',$tags)) ) {
-                    $tags[] = '[ALL]';
+        $filters = array('catalog_product','catalog_category','cms_page','cms_block','translation');
+        $changed = false;
+        foreach( $filters as $filter ) {
+            $filterTag = strtoupper($filter);
+            if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/flushes/'.$filter) ) {
+                $newTags = array();
+                foreach( $tags as $tag ) {
+                    if ( 0 !== strpos($tag, $prefix.$filterTag) ) {
+                        $newTags[] = $tag;
+                    } else {
+                        $changed = true;
+                    }
                 }
-                $message .= '  Tags:' . implode(',', $tags);
+                $tags = $newTags;
             }
+        }
 
-            if ( $type = $observer->getType() ) {
-                $message .= '  Type:' . $type;
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/flushes/_log') ) {
+            $message = 'Cache flush.  Tags:' . $this->logTags($oldTags,$prefix);
+            if ( $changed ) {
+                $message .= '  FilteredTags:' . $this->logTags($tags,$prefix);
             }
-
             if ( $request = Mage::app()->getRequest() ) {
                 if ( $action = $request->getActionName() ) {
                     $message .= '  Action:' . $request->getModuleName().'/'.$request->getControllerName().'/'.$action;
                 } elseif( $pathInfo = $request->getPathInfo() ) {
-                    $message .= ' PathInfo:' . $pathInfo;
+                    $message .= '  PathInfo:' . $pathInfo;
+                } elseif( !empty($_SERVER['argv']) ) {
+                    $message .= '  CommandLine:' . implode(' ',$_SERVER['argv']);
                 }
             }
-
             Mage::log( $message, Zend_Log::INFO, self::FLUSH_LOG_FILE );
         }
 
+        $transport->setTags($tags);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -262,4 +264,16 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         return $result;
     }
 
+    protected function logTags( $tags, $prefix ) {
+        $cleanTags = array();
+        $preg = '/^'.preg_quote($prefix,'/').'/';
+        foreach ( $tags as $tag ) {
+            $cleanTags[] = preg_replace( $preg, '', $tag );
+        }
+        if ( empty($tags) ) {
+            return '-empty-';
+        } else {
+            return implode(',', $tags);
+        }
+    }
 }

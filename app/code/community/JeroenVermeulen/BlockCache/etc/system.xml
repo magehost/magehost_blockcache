@@ -41,26 +41,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_formkey_fix>
-                        <enable_flush_log translate="label comment">
-                            <label>Enable Cache Flush Log</label>
-                            <comment>Log cache flushes to: var/log/cache_flush.log</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </enable_flush_log>
-                        <enable_flush_translation_change translate="label">
-                            <label>Enable flush on translation change</label>
-                            <comment>You need to [Flush Cache Storage] after switching.</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </enable_flush_translation_change>
                     </fields>
                 </general>
                 <category_page translate="label" module="jeroenvermeulen_blockcache">
@@ -103,19 +83,6 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </enable_messages_fix>
-                        <enable_flush_category_change translate="label">
-                            <label>Enable flush on category change</label>
-                            <comment>You need to [Flush Cache Storage] after switching.</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends>
-                                <enable_cache>1</enable_cache>
-                            </depends>
-                        </enable_flush_category_change>
                     </fields>
                 </category_page>
                 <product_detail translate="label" module="jeroenvermeulen_blockcache">
@@ -158,32 +125,6 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </enable_messages_fix>
-                        <enable_flush_product_change translate="label">
-                            <label>Enable flush on product change</label>
-                            <comment>You need to [Flush Cache Storage] after switching.</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends>
-                                <enable_cache>1</enable_cache>
-                            </depends>
-                        </enable_flush_product_change>
-                        <enable_flush_category_change translate="label">
-                            <label>Enable flush on category change</label>
-                            <comment>You need to [Flush Cache Storage] after switching.</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>50</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends>
-                                <enable_cache>1</enable_cache>
-                            </depends>
-                        </enable_flush_category_change>
                     </fields>
                 </product_detail>
                 <cms_page translate="label" module="jeroenvermeulen_blockcache">
@@ -214,19 +155,6 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </lifetime>
-                        <enable_flush_cms_page_change translate="label">
-                            <label>Enable flush on CMS page change</label>
-                            <comment>You need to [Flush Cache Storage] after switching.</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends>
-                                <enable_cache>1</enable_cache>
-                            </depends>
-                        </enable_flush_cms_page_change>
                     </fields>
                 </cms_page>
                 <cms_block translate="label" module="jeroenvermeulen_blockcache">
@@ -257,21 +185,72 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </lifetime>
-                        <enable_flush_cms_block_change translate="label">
-                            <label>Enable flush on CMS block change</label>
-                            <comment>You need to [Flush Cache Storage] after switching.</comment>
+                    </fields>
+                </cms_block>
+                <flushes>
+                    <label>Cache Flushes</label>
+                    <sort_order>600</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <_log translate="label comment">
+                            <label>Log Cache Flushes</label>
+                            <comment>Logfile: var/log/cache_flush.log</comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>30</sort_order>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <depends>
-                                <enable_cache>1</enable_cache>
-                            </depends>
-                        </enable_flush_cms_block_change>
+                        </_log>
+                        <catalog_category translate="label">
+                            <label>On Category change</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheflushes</source_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </catalog_category>
+                        <catalog_product translate="label">
+                            <label>On Product Change</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheflushes</source_model>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </catalog_product>
+                        <cms_page translate="label">
+                            <label>On CMS Page change</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheflushes</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </cms_page>
+                        <cms_block translate="label">
+                            <label>On CMS Block change</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheflushes</source_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </cms_block>
+                        <translation translate="label">
+                            <label>On Translation change</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheflushes</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </translation>
                     </fields>
-                </cms_block>
+                </flushes>
             </groups>
         </jeroenvermeulen_blockcache>
     </sections>
