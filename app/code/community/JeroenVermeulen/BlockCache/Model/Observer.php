@@ -229,7 +229,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/flushes/_log') ) {
             $message = 'Cache flush.  Tags:' . $this->logTags($oldTags,$prefix);
             if ( $changed ) {
-                $message .= '  FilteredTags:' . $this->logTags($tags,$prefix);
+                $message .= '  AfterFilter:' . $this->logTags($tags,$prefix);
             }
             if ( $request ) {
                 if ($action = $request->getActionName()) {
