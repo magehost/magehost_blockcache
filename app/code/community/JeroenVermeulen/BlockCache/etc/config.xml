@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -104,7 +104,12 @@
                 <catalog_product>1</catalog_product>
                 <cms_page>1</cms_page>
                 <cms_block>1</cms_block>
-                <translate>1</translate>
+                <translate>0</translate>
+                <store>0</store>
+                <website>0</website>
+                <block_html>0</block_html>
+                <mage>0</mage>
+                <_without_tags>0</_without_tags>
             </flushes>
         </jeroenvermeulen_blockcache>
     </default>

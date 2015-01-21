@@ -177,21 +177,49 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $tags = $transport->getTags();
         $prefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         $oldTags = $tags;
-
-        $filters = array('catalog_product','catalog_category','cms_page','cms_block','translate');
+        $doFilter = true;
         $changed = false;
-        foreach( $filters as $filter ) {
-            $filterTag = strtoupper($filter);
-            if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/flushes/'.$filter) ) {
-                $newTags = array();
-                foreach( $tags as $tag ) {
-                    if ( 0 !== strpos($tag, $prefix.$filterTag) ) {
-                        $newTags[] = $tag;
-                    } else {
-                        $changed = true;
+
+        if ( $request = Mage::app()->getRequest() ) {
+            if ('adminhtml' == $request->getRouteName() &&'cache' == $request->getControllerName()) {
+                // We will always allow System > Cache Management
+                $doFilter = false;
+            }
+        }
+        if ( !empty($_SERVER['SCRIPT_FILENAME']) ) {
+            $baseScript = basename($_SERVER['SCRIPT_FILENAME']);
+            if ( 'n98-magerun.phar' == $baseScript || 'n98'  == $baseScript ) {
+                // We will always allow N98 Magerun
+                $doFilter = false;
+            }
+        }
+
+        if ( $doFilter ) {
+            if (empty( $tags ) && !Mage::getStoreConfigFlag( self::CONFIG_SECTION . '/flushes/_without_tags' )) {
+                $tags[ ] = 'JV_DUMMY_TAG';
+            }
+            $filters = array( 'catalog_product',
+                              'catalog_category',
+                              'cms_page',
+                              'cms_block',
+                              'translate',
+                              'store',
+                              'website',
+                              'block_html',
+                              'mage' );
+            foreach ($filters as $filter) {
+                $filterTag = strtoupper( $filter );
+                if ( ! Mage::getStoreConfigFlag( self::CONFIG_SECTION . '/flushes/' . $filter ) ) {
+                    $newTags = array();
+                    foreach ($tags as $tag) {
+                        if (0 !== strpos( $tag, $prefix . $filterTag )) {
+                            $newTags[ ] = $tag;
+                        } else {
+                            $changed = true;
+                        }
                     }
+                    $tags = $newTags;
                 }
-                $tags = $newTags;
             }
         }
 
@@ -200,8 +228,8 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             if ( $changed ) {
                 $message .= '  FilteredTags:' . $this->logTags($tags,$prefix);
             }
-            if ( $request = Mage::app()->getRequest() ) {
-                if ( $action = $request->getActionName() ) {
+            if ( $request ) {
+                if ($action = $request->getActionName()) {
                     $message .= '  Action:' . $request->getModuleName().'/'.$request->getControllerName().'/'.$action;
                 } elseif( $pathInfo = $request->getPathInfo() ) {
                     $message .= '  PathInfo:' . $pathInfo;
