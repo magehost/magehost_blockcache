@@ -40,6 +40,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_formkey_fix>
+                        <log_miss translate="label comment">
+                            <label>Log Cache Misses</label>
+                            <comment>Logfile: var/log/cache_miss.log</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </log_miss>
                     </fields>
                 </general>
                 <category_page translate="label" module="jeroenvermeulen_blockcache">

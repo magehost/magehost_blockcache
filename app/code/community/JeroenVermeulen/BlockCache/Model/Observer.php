@@ -17,6 +17,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     const CONFIG_SECTION  = 'jeroenvermeulen_blockcache';
     const BLOCK_CACHE_TAG = 'BLOCK_HTML';
     const FLUSH_LOG_FILE  = 'cache_flush.log';
+    const MISS_LOG_FILE   = 'cache_miss.log';
+    /** @var null|string */
+    var $logSuffix = null;
 
     /**
      * Apply cache settings to block
@@ -172,6 +175,10 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
     }
 
+    /**
+     * Event listener to filter cache flushes
+     * @param Varien_Event_Observer $observer
+     */
     public function cleanBackendCache( $observer ) {
         $transport = $observer->getTransport();
         $tags = $transport->getTags();
@@ -231,19 +238,24 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             if ( $changed ) {
                 $message .= '  AfterFilter:' . $this->logTags($tags,$prefix);
             }
-            if ( $request ) {
-                if ($action = $request->getActionName()) {
-                    $message .= '  Action:' . $request->getModuleName().'/'.$request->getControllerName().'/'.$action;
-                } elseif( $pathInfo = $request->getPathInfo() ) {
-                    $message .= '  PathInfo:' . $pathInfo;
-                } elseif( !empty($_SERVER['argv']) ) {
-                    $message .= '  CommandLine:' . implode(' ',$_SERVER['argv']);
-                }
-            }
+            $message .= $this->getLogSuffix();
             Mage::log( $message, Zend_Log::INFO, self::FLUSH_LOG_FILE );
         }
 
         $transport->setTags($tags);
+    }
+
+    /**
+     * Event listener used to log cache misses
+     * @param Varien_Event_Observer $observer
+     */
+    public function cacheMiss( $observer ) {
+        $id = $observer->getId();
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/log_miss') ) {
+            $message = 'Cache miss.  Id:' . $id;
+            $message .= $this->getLogSuffix();
+            Mage::log( $message, Zend_Log::INFO, self::MISS_LOG_FILE );
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -295,6 +307,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         return $result;
     }
 
+    /**
+     * Form array of tags for output in log.
+     * @param array $tags
+     * @param string $prefix
+     * @return string
+     */
     protected function logTags( $tags, $prefix ) {
         if ( empty($tags) ) {
             return '-empty-';
@@ -306,5 +324,29 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             }
             return implode(',', $cleanTags);
         }
+    }
+
+    /**
+     * Get a suffix string to add to logging lines which tells what is happening
+     * @return string
+     */
+    protected function getLogSuffix()
+    {
+        if (is_null( $this->logSuffix )) {
+            if ($request = Mage::app()->getRequest()) {
+                if ($action = $request->getActionName()) {
+                    $this->logSuffix .= '  Action:' . $request->getModuleName() . '/' . $request->getControllerName(
+                        ) . '/' . $action;
+                } elseif ($pathInfo = $request->getPathInfo()) {
+                    $this->logSuffix .= '  PathInfo:' . $pathInfo;
+                }
+            }
+        }
+        if (is_null( $this->logSuffix )) {
+            if (!empty( $_SERVER[ 'argv' ] )) {
+                $this->logSuffix .= '  CommandLine:' . implode( ' ', $_SERVER[ 'argv' ] );
+            }
+        }
+        return strval($this->logSuffix);
     }
 }
