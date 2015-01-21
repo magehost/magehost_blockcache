@@ -195,8 +195,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         if ( $doFilter ) {
-            if (empty( $tags ) && !Mage::getStoreConfigFlag( self::CONFIG_SECTION . '/flushes/_without_tags' )) {
+            if ( empty($tags) && ! Mage::getStoreConfigFlag( self::CONFIG_SECTION . '/flushes/_without_tags' )) {
                 $tags[ ] = 'JV_DUMMY_TAG';
+                $changed = true;
             }
             $filters = array( 'catalog_product',
                               'catalog_category',

@@ -16,7 +16,6 @@
     <sections>
         <jeroenvermeulen_blockcache translate="label" module="jeroenvermeulen_blockcache">
             <label>JeroenVermeulen BlockCache</label>
-            <comment><![CDATA[After switching please reindex the<br /><em>Catalog Search Index</em>.]]></comment>
             <tab>advanced</tab>
             <sort_order>10</sort_order>
             <show_in_default>1</show_in_default>
