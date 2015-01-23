@@ -23,12 +23,14 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
      */
     protected function _getHeaderHtml($element) {
         $result = '';
-        $needBackend = 'JeroenVermeulen_Cm_Cache_Backend_File';
-        $currentBackend = strval( Mage::getConfig()->getNode('global/cache/backend') );
-        if ( $needBackend != $currentBackend ) {
+        $goodBackEnds = array('JeroenVermeulen_Cm_Cache_Backend_File',
+                              'JeroenVermeulen_Cm_Cache_Backend_Redis');
+        $currentBackEnd = strval( Mage::getConfig()->getNode('global/cache/backend') );
+        if ( ! in_array( $currentBackEnd, $goodBackEnds ) ) {
+            $or = ' ' . $this->__('or') . ' ';
             $message = 'ERROR:';
-            $message .= sprintf("<br />This extension requires cache backend: %s", $needBackend);
-            $message .= sprintf("<br />Current setting: %s", $currentBackend);
+            $message .= '<br />' . $this->__("This extension requires cache backend: %s", join($or,$goodBackEnds));
+            $message .= '<br />' . $this->__("Current setting: %s", $currentBackEnd);
             $result.= sprintf( '<ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul>', $message );
         }
         $result .= sprintf( '<p>%s</p>',
