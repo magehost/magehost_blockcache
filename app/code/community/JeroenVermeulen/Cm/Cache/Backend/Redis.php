@@ -8,15 +8,22 @@
  */
 class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
 {
+    const ADMIN_CLEAN_TIMEOUT = 3600;
+
     /**
      * {@inheritdoc}
      * This function will dispach the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
      */
-    public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array()) {
+    public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array())
+    {
         $transportObject = new Varien_Object;
-        $transportObject->setTags($tags);
-        Mage::dispatchEvent('jv_clean_backend_cache', array('transport' => $transportObject));
+        $transportObject->setTags( $tags );
+        Mage::dispatchEvent( 'jv_clean_backend_cache', array( 'transport' => $transportObject ) );
         $tags = $transportObject->getTags();
+        if ( Mage::app()->getStore()->isAdmin() ) {
+            // Long timeout when cleaning in Admin, to prevent timeout when cleaning lots of cache.
+            $this->_redis->setReadTimeout( self::ADMIN_CLEAN_TIMEOUT );
+        }
         parent::clean($mode, $tags);
     }
 
