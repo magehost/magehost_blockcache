@@ -15,11 +15,12 @@
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 {
     const CONFIG_SECTION  = 'jeroenvermeulen_blockcache';
-    const BLOCK_CACHE_TAG = 'BLOCK_HTML';
+    const BLOCK_CACHE_TAG = 'block_html';
     const FLUSH_LOG_FILE  = 'cache_flush.log';
     const MISS_LOG_FILE   = 'cache_miss.log';
     /** @var null|string */
     var $logSuffix = null;
+    var $filterUrlCache = array();
 
     /**
      * Apply cache settings to block
@@ -38,23 +39,29 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
         if ( $block instanceof Mage_Catalog_Block_Category_View ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
-                $currentCategory = Mage::registry('current_category');
-                $cacheKeyData    = $this->getBlockCacheKeyData( $block, $store, $currentCategory );
-                $cacheTags       = $this->getBlockCacheTags( $currentCategory );
-                $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/category_page/lifetime'));
-                $catalogSession = Mage::getSingleton('catalog/session');
-                if ( $catalogSession ) {
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    $cacheKeyData[] = 'so'.strval($catalogSession->getSortOrder());
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    $cacheKeyData[] = 'sd'.strval($catalogSession->getSortDirection());
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    $cacheKeyData[] = 'dm'.strval($catalogSession->getDisplayMode());
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    $cacheKeyData[] = 'lp'.strval($catalogSession->getLimitPage());
-                }
-                if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
-                    $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
+                $hasParam = ( false !== strpos( $this->filterUrl(), '?' ) );
+                if ( $hasParam && ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/cache_when_url_param') ) {
+                    // Caching of category with url param disabled in config
+                    $cacheLifeTime   = null;
+                } else {
+                    $currentCategory = Mage::registry('current_category');
+                    $cacheKeyData    = $this->getBlockCacheKeyData( $block, $store, $currentCategory );
+                    $cacheTags       = $this->getBlockCacheTags( $currentCategory );
+                    $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/category_page/lifetime'));
+                    $catalogSession = Mage::getSingleton('catalog/session');
+                    if ( $catalogSession ) {
+                        /** @noinspection PhpUndefinedMethodInspection */
+                        $cacheKeyData[] = 'so'.strval($catalogSession->getSortOrder());
+                        /** @noinspection PhpUndefinedMethodInspection */
+                        $cacheKeyData[] = 'sd'.strval($catalogSession->getSortDirection());
+                        /** @noinspection PhpUndefinedMethodInspection */
+                        $cacheKeyData[] = 'dm'.strval($catalogSession->getDisplayMode());
+                        /** @noinspection PhpUndefinedMethodInspection */
+                        $cacheKeyData[] = 'lp'.strval($catalogSession->getLimitPage());
+                    }
+                    if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
+                        $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
+                    }
                 }
             } else {
                 // Caching of this block is disabled in config
@@ -252,9 +259,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
     protected function getBlockCacheKeyData( $block, $store, $category=null, $product=null ) {
         /** @noinspection PhpUndefinedMethodInspection */
-        $currentUrl = Mage::helper('core/url')->getCurrentUrl();
-        $currentUrl = preg_replace('/(\?|&)(utm_source|utm_medium|utm_campaign|gclid|cx|ie|cof|siteurl)=[^&]+/ms','$1',$currentUrl);
-        $currentUrl = str_replace('?&','?',$currentUrl);
+        $currentUrl = $this->filterUrl();
         /** @noinspection PhpUndefinedMethodInspection */
         $result = array( $currentUrl, // covers secure, store code, url param, page nr
                          get_class( $block ),
@@ -268,6 +273,21 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $result[] = 'p'.$product->getId();
         }
         return $result;
+    }
+
+    protected function filterUrl( $url=null ) {
+        if ( is_null($url) ) {
+            $url = Mage::helper('core/url')->getCurrentUrl();
+        }
+        if ( !isset($this->filterUrlCache[$url]) ) {
+            $filterUrl = $url;
+            $filterUrl = preg_replace('/(\?|&)(utm_source|utm_medium|utm_campaign|gclid|cx|ie|cof|siteurl)=[^&]+/ms','$1',$filterUrl);
+            $filterUrl = preg_replace('/\?&+/','?',$filterUrl);
+            $filterUrl = preg_replace('/\&{2,}/','&',$filterUrl);
+            $filterUrl = preg_replace('/\?$/','',$filterUrl);
+            $this->filterUrlCache[$url] = $filterUrl;
+        }
+        return $this->filterUrlCache[$url];
     }
 
     /**

@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.3.2</version>
+            <version>1.4.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -92,6 +92,7 @@
             </general>
             <category_page>
                 <enable_cache>1</enable_cache>
+                <cache_when_url_param>0</cache_when_url_param>
                 <lifetime>604800</lifetime>
                 <enable_messages_fix>1</enable_messages_fix>
             </category_page>

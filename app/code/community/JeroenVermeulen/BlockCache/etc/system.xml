@@ -68,6 +68,18 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_cache>
+                        <cache_when_url_param translate="label comment">
+                            <label>Cache when URL parameters set</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <enable_cache>1</enable_cache>
+                            </depends>
+                        </cache_when_url_param>
                         <lifetime translate="label">
                             <label>Life Time (Seconds)</label>
                             <frontend_type>text</frontend_type>
