@@ -40,11 +40,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
                 $currentCategory = Mage::registry('current_category');
                 $cacheKeyData    = $this->getBlockCacheKeyData( $block, $store, $currentCategory );
-                $tagsCategory     = null;
-                if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_flush_category_change') ) {
-                    $tagsCategory = $currentCategory;
-                }
-                $cacheTags       = $this->getBlockCacheTags( $tagsCategory );
+                $cacheTags       = $this->getBlockCacheTags( $currentCategory );
                 $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/category_page/lifetime'));
                 $catalogSession = Mage::getSingleton('catalog/session');
                 if ( $catalogSession ) {
@@ -70,15 +66,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $currentCategory = Mage::registry('current_category');
                 $currentProduct  = Mage::registry('current_product');
                 $cacheKeyData    = $this->getBlockCacheKeyData( $block, $store, $currentCategory, $currentProduct );
-                $tagsCategory    = null;
-                if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_detail/enable_flush_category_change') ) {
-                    $tagsCategory = $currentCategory;
-                }
-                $tagsProduct     = null;
-                if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_detail/enable_flush_product_change') ) {
-                    $tagsProduct = $currentProduct;
-                }
-                $cacheTags       = $this->getBlockCacheTags( $tagsCategory, $tagsProduct );
+                $cacheTags       = $this->getBlockCacheTags( $currentCategory, $currentProduct );
                 $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/product_detail/lifetime'));
                 if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
                     $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
@@ -97,9 +85,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheTags    = $this->getBlockCacheTags();
                 $cmsPage      = Mage::getSingleton( 'cms/page' );
                 if ( $cmsPage instanceof Mage_Cms_Model_Page ) {
-                    if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_page/enable_flush_cms_page_change') ) {
-                        $cacheTags[] = Mage_Cms_Model_Page::CACHE_TAG . '_' . $cmsPage->getId();
-                    }
+                    $cacheTags[] = Mage_Cms_Model_Page::CACHE_TAG . '_' . $cmsPage->getId();
                     $keyPrefix .= 'CMSP'.$cmsPage->getId().'_';
                 }
                 $cacheLifeTime = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/cms_page/lifetime' ) );
@@ -110,10 +96,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheKeyData   = $this->getBlockCacheKeyData( $block, $store );
                 $cacheKeyData[] = $block->getBlockId();
                 $cacheTags      = $this->getBlockCacheTags();
-                if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_block/enable_flush_cms_block_change') ) {
-                    // Would be nice to add block id, so only one block gets flushed, but we don't know it here.
-                    $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
-                }
+                $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
                 $cacheLifeTime  = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/cms_block/lifetime' ) );
                 $keyPrefix .= 'CMSB_';
             }
@@ -294,9 +277,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
     protected function getBlockCacheTags( $category=null, $product=null ) {
         $result = array( self::BLOCK_CACHE_TAG );
-        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/enable_flush_translation_change') ) {
-            $result[] = Mage_Core_Model_Translate::CACHE_TAG;
-        }
+        $result[] = Mage_Core_Model_Translate::CACHE_TAG;
         if ( $category instanceof Mage_Catalog_Model_Category ) {
             $result = array_merge( $result, $category->getCacheIdTags() );
         }
