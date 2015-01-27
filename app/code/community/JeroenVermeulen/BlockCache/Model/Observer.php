@@ -36,7 +36,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $cacheKeyData  = array();
         $store         = Mage::app()->getStore();
         $keyPrefix     = 'JV_'; // We use this to make the file names a little less cryptic
-
+        $cacheWarmerUserAgent = Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/user_agent');
+        $isCacheWarmer = ( !empty($cacheWarmerUserAgent) &&
+                           false !== strpos($_SERVER['HTTP_USER_AGENT'],$cacheWarmerUserAgent) );
         if ( $block instanceof Mage_Catalog_Block_Category_View ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
                 $hasParam = ( false !== strpos( $this->filterUrl(), '?' ) );
@@ -108,13 +110,16 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $keyPrefix .= 'CMSB_';
             }
         }
-
         if ( false !== $cacheLifeTime ) {
+            $cacheKey = $keyPrefix . md5( implode('|', $cacheKeyData) );
+            if ( $isCacheWarmer && Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/refresh_on_visit') ) {
+                Mage::app()->removeCache( $cacheKey );
+            }
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheLifetime( $cacheLifeTime );
             if ( null !== $cacheLifeTime ) {
                 /** @noinspection PhpUndefinedMethodInspection */
-                $block->setCacheKey( $keyPrefix . md5( implode('|', $cacheKeyData) ) . implode('|', $cacheTags) );
+                $block->setCacheKey( $cacheKey );
                 /** @noinspection PhpUndefinedMethodInspection */
                 $block->setCacheTags( $cacheTags );
             }
