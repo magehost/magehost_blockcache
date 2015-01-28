@@ -9,7 +9,7 @@
  *
  * @category     JeroenVermeulen
  * @package      JeroenVermeulen_BlockCache
- * @copyright    Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ * @copyright    Copyright (c) 2015 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
  */
 
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract

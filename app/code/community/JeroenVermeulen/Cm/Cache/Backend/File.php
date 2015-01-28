@@ -1,4 +1,16 @@
 <?php
+/**
+ * JeroenVermeulen_BlockCache
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this Module to
+ * newer versions in the future.
+ *
+ * @category     JeroenVermeulen
+ * @package      JeroenVermeulen_BlockCache
+ * @copyright    Copyright (c) 2015 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ */
 
 /**
  * Class JeroenVermeulen_Cm_Cache_Backend_File
@@ -9,8 +21,9 @@
 class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
 {
     /**
+     * This function will dispatch the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
+     *
      * {@inheritdoc}
-     * This function will dispach the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
      */
     public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array()) {
         $transportObject = new Varien_Object;
@@ -21,9 +34,10 @@ class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
     }
 
     /**
-     * {@inheritdoc}
-     * This function will dispach the event 'jv_cache_miss_jv' when a cache key miss occurs loading a key
+     * This function will dispatch the event 'jv_cache_miss_jv' when a cache key miss occurs loading a key
      * from JeroenVermeulen_BlockCache.
+     *
+     * {@inheritdoc}
      */
     public function load($id, $doNotTestCacheValidity = false) {
         $result = parent::load($id, $doNotTestCacheValidity);

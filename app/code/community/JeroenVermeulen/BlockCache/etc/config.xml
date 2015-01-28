@@ -9,13 +9,13 @@
 
   @category     JeroenVermeulen
   @package      JeroenVermeulen_BlockCache
-  @copyright    Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+  @copyright    Copyright (c) 2015 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
 -->
 <!--suppress XmlUnboundNsPrefix -->
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.5.1</version>
+            <version>1.5.2</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
