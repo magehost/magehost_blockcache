@@ -38,6 +38,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $keyPrefix     = 'JV_'; // We use this to make the file names a little less cryptic
         $cacheWarmerUserAgent = Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/user_agent');
         $isCacheWarmer = ( !empty($cacheWarmerUserAgent) &&
+                           !empty($_SERVER['HTTP_USER_AGENT']) &&
                            false !== strpos($_SERVER['HTTP_USER_AGENT'],$cacheWarmerUserAgent) );
         if ( $block instanceof Mage_Catalog_Block_Category_View ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
@@ -103,6 +104,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         elseif ( $block instanceof Mage_Cms_Block_Block || $block instanceof Mage_Cms_Block_Widget_Block ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_block/enable_cache') ) {
                 $cacheKeyData   = $this->getBlockCacheKeyData( $block, $store );
+                /** @noinspection PhpUndefinedMethodInspection */
                 $cacheKeyData[] = $block->getBlockId();
                 $cacheTags      = $this->getBlockCacheTags();
                 $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
@@ -175,7 +177,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @param Varien_Event_Observer $observer
      */
     public function cleanBackendCache( $observer ) {
+        /** @noinspection PhpUndefinedMethodInspection */
         $transport = $observer->getTransport();
+        /** @noinspection PhpUndefinedMethodInspection */
         $tags = $transport->getTags();
         $prefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         $oldTags = $tags;
@@ -237,6 +241,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             Mage::log( $message, Zend_Log::INFO, self::FLUSH_LOG_FILE );
         }
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $transport->setTags($tags);
     }
 
@@ -282,6 +287,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
     protected function filterUrl( $url=null ) {
         if ( is_null($url) ) {
+            /** @noinspection PhpUndefinedMethodInspection */
             $url = Mage::helper('core/url')->getCurrentUrl();
         }
         if ( !isset($this->filterUrlCache[$url]) ) {
