@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.5.2</version>
+            <version>1.5.3</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -106,15 +106,15 @@
                 <lifetime>604800</lifetime>
             </cms_page>
             <cms_block>
-                <enable_cache>1</enable_cache>
+                <enable_cache>0</enable_cache>
                 <lifetime>604800</lifetime>
             </cms_block>
             <flushes>
-                <_log>1</_log>
+                <_log>0</_log>
                 <catalog_category>1</catalog_category>
                 <catalog_product>1</catalog_product>
                 <cms_page>1</cms_page>
-                <cms_block>0</cms_block>
+                <cms_block>1</cms_block>
                 <translate>0</translate>
                 <store>0</store>
                 <website>0</website>

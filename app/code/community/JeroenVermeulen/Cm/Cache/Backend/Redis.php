@@ -38,7 +38,7 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
     }
 
     /**
-     * This function will dispatch the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
+     * This method will dispatch the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
      *
      * {@inheritdoc}
      */
@@ -52,15 +52,43 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
     }
 
     /**
-     * This function will dispatch the event 'jv_cache_miss_jv' when a cache key miss occurs loading a key
+     * This method will dispatch the event 'jv_cache_miss_jv' when a cache key miss occurs loading a key
      * from JeroenVermeulen_BlockCache.
+     *
+     * This method will also catch exceptions on Redis failure.
      *
      * {@inheritdoc}
      */
     public function load($id, $doNotTestCacheValidity = false) {
-        $result = parent::load($id, $doNotTestCacheValidity);
+        try {
+            $result = parent::load($id, $doNotTestCacheValidity);
+        } catch ( CredisException $e ) {
+            Mage::logException($e);
+            $result = false;
+        } catch ( RedisException $e ) {
+            Mage::logException($e);
+            $result = false;
+        }
         if ( false === $result && false !== strpos($id,'_JV_') ) {
             Mage::dispatchEvent('jv_cache_miss_jv', array('id' => $id));
+        }
+        return $result;
+    }
+
+    /**
+     * This method will catch exceptions on Redis failure.
+     *
+     * {@inheritdoc}
+     */
+    public function save($data, $id, $tags = array(), $specificLifetime = false) {
+        try {
+            $result = parent::save($data, $id, $tags, $specificLifetime);
+        } catch ( CredisException $e ) {
+            Mage::logException($e);
+            $result = false;
+        } catch ( RedisException $e ) {
+            Mage::logException($e);
+            $result = false;
         }
         return $result;
     }
