@@ -45,6 +45,8 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
             $this->processRedisException( $e, 'constructor' );
         } catch ( RedisException $e ) {
             $this->processRedisException( $e, 'constructor' );
+        } catch ( Zend_Cache_Exception $e ) {
+            $this->processRedisException( $e, 'constructor' );
         }
         if ( !$this->works ) {
             $message = 'JeroenVermeulen_Cm_Cache_Backend_Redis: Disabled Redis cache backend because constructor failed';
@@ -72,6 +74,9 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
             } catch ( RedisException $e ) {
                 $this->processRedisException( $e, 'load' );
                 $result = false;
+            } catch ( Zend_Cache_Exception $e ) {
+                $this->processRedisException( $e, 'load' );
+                $result = false;
             }
         }
         if ( false === $result && false !== strpos($id,'_JV_') ) {
@@ -97,6 +102,9 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
             } catch ( RedisException $e ) {
                 $this->processRedisException( $e, 'test' );
                 $result = false;
+            } catch ( Zend_Cache_Exception $e ) {
+                $this->processRedisException( $e, 'test' );
+                $result = false;
             }
         }
         return $result;
@@ -120,6 +128,9 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
             } catch ( RedisException $e ) {
                 $this->processRedisException( $e, 'save' );
                 $result = false;
+            } catch ( Zend_Cache_Exception $e ) {
+                $this->processRedisException( $e, 'save' );
+                $result = false;
             }
         }
         return $result;
@@ -140,6 +151,9 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
                 $this->processRedisException( $e, 'remove' );
                 $result = false;
             } catch ( RedisException $e ) {
+                $this->processRedisException( $e, 'remove' );
+                $result = false;
+            } catch ( Zend_Cache_Exception $e ) {
                 $this->processRedisException( $e, 'remove' );
                 $result = false;
             }
