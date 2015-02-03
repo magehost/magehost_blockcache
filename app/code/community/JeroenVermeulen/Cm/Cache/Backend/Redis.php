@@ -13,8 +13,10 @@
  */
 
 /**
- * Class JeroenVermeulen_Cm_Cache_Backend_File
+ * Class JeroenVermeulen_Cm_Cache_Backend_Redis
  * This class adds some functionality to Cm_Cache_Backend_Redis, mainly events.
+ * It also catches a number of Redis errors, to prevent the frontend from crashing when a large Redis cache is
+ * being flushed.
  *
  * {@inheritdoc}
  */
@@ -34,7 +36,13 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
                 $options['read_timeout'] = self::ADMIN_READ_TIMEOUT;
             }
         }
-        parent::__construct( $options );
+        try {
+            parent::__construct( $options );
+        } catch ( CredisException $e ) {
+            $this->processRedisException( $e, 'constructor' );
+        } catch ( RedisException $e ) {
+            $this->processRedisException( $e, 'constructor' );
+        }
     }
 
     /**
@@ -63,10 +71,10 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
         try {
             $result = parent::load($id, $doNotTestCacheValidity);
         } catch ( CredisException $e ) {
-            Mage::logException($e);
+            $this->processRedisException( $e, 'load' );
             $result = false;
         } catch ( RedisException $e ) {
-            Mage::logException($e);
+            $this->processRedisException( $e, 'load' );
             $result = false;
         }
         if ( false === $result && false !== strpos($id,'_JV_') ) {
@@ -84,13 +92,54 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
         try {
             $result = parent::save($data, $id, $tags, $specificLifetime);
         } catch ( CredisException $e ) {
-            Mage::logException($e);
+            $this->processRedisException( $e, 'save' );
             $result = false;
         } catch ( RedisException $e ) {
-            Mage::logException($e);
+            $this->processRedisException( $e, 'save' );
             $result = false;
         }
         return $result;
     }
 
+    /**
+     * This method will catch exceptions on Redis failure.
+     *
+     * {@inheritdoc}
+     */
+    public function remove($id) {
+        try {
+            $result = parent::remove($id);
+        } catch ( CredisException $e ) {
+            $this->processRedisException( $e, 'remove' );
+            $result = false;
+        } catch ( RedisException $e ) {
+            $this->processRedisException( $e, 'remove' );
+            $result = false;
+        }
+        return $result;
+    }
+
+    /**
+     * This method will catch exceptions on Redis failure.
+     *
+     * {@inheritdoc}
+     */
+    public function test($id) {
+        try {
+            $result = parent::test($id);
+        } catch ( CredisException $e ) {
+            $this->processRedisException( $e, 'test' );
+            $result = false;
+        } catch ( RedisException $e ) {
+            $this->processRedisException( $e, 'test' );
+            $result = false;
+        }
+        return $result;
+    }
+
+    protected function processRedisException($e, $doing) {
+        $message = sprintf("JeroenVermeulen_Cm_Cache_Backend_Redis caught Redis Exception during '%s'", $doing);
+        Mage::log( $message, Zend_Log::ERR, 'exception.log' );
+        Mage::logException($e);
+    }
 }
