@@ -28,3 +28,6 @@ This Extension also adds functionality to log & filter cache flushes:
 * Wipe Cache Storage
 
 It does this by extending [https://github.com/colinmollenhour/Cm_Cache_Backend_File](Cm_Cache_Backend_File) or [https://github.com/colinmollenhour/Cm_Cache_Backend_Redis](Cm_Cache_Backend_Redis)
+
+### Config Screenshot
+![Config Screenshot](docs/config.png)
