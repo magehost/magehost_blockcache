@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.6.2</version>
+            <version>1.7.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -105,6 +105,10 @@
                 <enable_cache>1</enable_cache>
                 <lifetime>604800</lifetime>
             </cms_page>
+            <layered_navigation>
+                <enable_cache>1</enable_cache>
+                <lifetime>604800</lifetime>
+            </layered_navigation>
             <cms_block>
                 <enable_cache>0</enable_cache>
                 <lifetime>604800</lifetime>

@@ -89,6 +89,15 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheLifeTime   = null;
             }
         }
+        elseif ( $block instanceof Mage_Catalog_Block_Layer_View || $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View ) {
+            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/layered_navigation/enable_cache') ) {
+                $currentCategory = Mage::registry('current_category');
+                $cacheKeyData = $this->getBlockCacheKeyData( $block, $store, $currentCategory );
+                $cacheTags    = $this->getBlockCacheTags( $currentCategory );
+                $keyPrefix .= 'LNAV'.$currentCategory->getId().'_';
+                $cacheLifeTime = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/layered_navigation/lifetime' ) );
+            }
+        }
         elseif ( $block instanceof Mage_Cms_Block_Page ) {
             if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_page/enable_cache') ) {
                 $cacheKeyData = $this->getBlockCacheKeyData( $block, $store );
