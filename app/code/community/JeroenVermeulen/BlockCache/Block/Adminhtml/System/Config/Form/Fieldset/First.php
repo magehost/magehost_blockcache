@@ -45,10 +45,10 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
             $message .= 'ERROR:';
             $message .= '<br />' . $this->__("This extension requires cache backend: %s", join($or,$goodBackEnds) );
             $message .= '<br />' . $this->__("Current setting: %s", $currentBackEnd);
-        }
-        $message .= '<br />';
-        foreach( $optionClasses as $dependClass => $ourClass ) {
-            $message .= '<br />' . $this->__("If you would install '%s' you could also use '%s'.", $dependClass, $ourClass );
+            $message .= '<br />';
+            foreach( $optionClasses as $dependClass => $ourClass ) {
+                $message .= '<br />' . $this->__("If you would install '%s' you could also use '%s'.", $dependClass, $ourClass );
+            }
         }
         if ( !empty($message) ) {
             $result.= sprintf( '<ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul>', $message );
