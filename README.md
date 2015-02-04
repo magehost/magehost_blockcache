@@ -1,5 +1,7 @@
 ## JeroenVermeulen_BlockCache
-Performance improvement by caching big blocks in Magento
+Performance improvement by caching big blocks in Magento.
+
+This extension is meant for heavy traffic shops which are not running on Varnish.
 
 ### Config Settings:
 
