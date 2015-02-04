@@ -15,9 +15,14 @@
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 {
     const CONFIG_SECTION  = 'jeroenvermeulen_blockcache';
-    const BLOCK_CACHE_TAG = 'block_html';
     const FLUSH_LOG_FILE  = 'cache_flush.log';
     const MISS_LOG_FILE   = 'cache_miss.log';
+    const BLOCK_GROUP_CATEGORY    = 'category_page';
+    const BLOCK_GROUP_PRODUCT     = 'product_detail';
+    const BLOCK_GROUP_CMS_PAGE    = 'cms_page';
+    const BLOCK_GROUP_LAYERED_NAV = 'layered_navigation';
+    const BLOCK_GROUP_CMS_BLOCK   = 'cms_block';
+
     /** @var null|string */
     var $logSuffix = null;
     var $filterUrlCache = array();
@@ -31,109 +36,114 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         /** @var Mage_Core_Block_Template $block */
         /** @noinspection PhpUndefinedMethodInspection */
         $block         = $observer->getBlock();
-        $cacheLifeTime = false;
-        $cacheTags     = array();
-        $cacheKeyData  = array();
         $store         = Mage::app()->getStore();
-        $keyPrefix     = 'JV_'; // We use this to make the file names a little less cryptic
-        $cacheWarmerUserAgent = Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/user_agent');
-        $isCacheWarmer = ( !empty($cacheWarmerUserAgent) &&
-                           !empty($_SERVER['HTTP_USER_AGENT']) &&
-                           false !== strpos($_SERVER['HTTP_USER_AGENT'],$cacheWarmerUserAgent) );
-        if ( $block instanceof Mage_Catalog_Block_Category_View ) {
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/enable_cache') ) {
-                $hasParam = ( false !== strpos( $this->filterUrl(), '?' ) );
-                if ( $hasParam && ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/category_page/cache_when_url_param') ) {
-                    // Caching of category with url param disabled in config
-                    $cacheLifeTime   = null;
-                } else {
-                    $currentCategory = Mage::registry('current_category');
-                    $cacheKeyData    = $this->getBlockCacheKeyData( $block, $store, $currentCategory );
-                    $cacheTags       = $this->getBlockCacheTags( $currentCategory );
-                    $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/category_page/lifetime'));
-                    $catalogSession = Mage::getSingleton('catalog/session');
-                    if ( $catalogSession ) {
+
+        if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/cache_when_url_param')
+             && ( false !== strpos($this->filterUrl(),'?') ) ) {
+            // Caching of page with url param disabled in config, and this page has them.
+            return;
+        }
+
+        $blockGroup = false;
+        if ($block instanceof Mage_Catalog_Block_Category_View) {
+            $blockGroup = self::BLOCK_GROUP_CATEGORY;
+        } elseif ($block instanceof Mage_Catalog_Block_Product_View) {
+            $blockGroup = self::BLOCK_GROUP_PRODUCT;
+        } elseif ($block instanceof Mage_Catalog_Block_Layer_View ||
+                  $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View) {
+            $blockGroup = self::BLOCK_GROUP_LAYERED_NAV;
+        } elseif ($block instanceof Mage_Cms_Block_Page) {
+            $blockGroup = self::BLOCK_GROUP_CMS_PAGE;
+        } elseif ($block instanceof Mage_Cms_Block_Block ||
+                  $block instanceof Mage_Cms_Block_Widget_Block) {
+            $blockGroup = self::BLOCK_GROUP_CMS_BLOCK;
+        }
+        if ( false === $blockGroup ) {
+            // It is a block group we don't change caching for.
+            return;
+        }
+
+        $cacheLifeTime = null;
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/'.$blockGroup.'/enable_cache') ) {
+            $cacheLifeTime = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/'.$blockGroup.'/lifetime'));
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $block->setCacheLifetime( $cacheLifeTime );
+
+        if ( $cacheLifeTime ) {
+            $currentCategory = null;
+            $currentProduct  = null;
+            $cacheKey        = 'JV_';
+            $cacheKeyData    = '';
+            $cacheTags       = array();
+
+            switch ($blockGroup) {
+
+                case self::BLOCK_GROUP_CATEGORY:
+                    $cacheKey .= 'CAT_';
+                    $currentCategory = Mage::registry( 'current_category' );
+                    // Add sorting & paging to cache key
+                    $catalogSession = Mage::getSingleton( 'catalog/session' );
+                    if ($catalogSession) {
                         /** @noinspection PhpUndefinedMethodInspection */
-                        $cacheKeyData[] = 'so'.strval($catalogSession->getSortOrder());
+                        $cacheKeyData .= '|so' . strval( $catalogSession->getSortOrder() );
                         /** @noinspection PhpUndefinedMethodInspection */
-                        $cacheKeyData[] = 'sd'.strval($catalogSession->getSortDirection());
+                        $cacheKeyData .= '|sd' . strval( $catalogSession->getSortDirection() );
                         /** @noinspection PhpUndefinedMethodInspection */
-                        $cacheKeyData[] = 'dm'.strval($catalogSession->getDisplayMode());
+                        $cacheKeyData .= '|dm' . strval( $catalogSession->getDisplayMode() );
                         /** @noinspection PhpUndefinedMethodInspection */
-                        $cacheKeyData[] = 'lp'.strval($catalogSession->getLimitPage());
+                        $cacheKeyData .= '|lp' . strval( $catalogSession->getLimitPage() );
                     }
-                    if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
-                        $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
+                    break;
+
+                case self::BLOCK_GROUP_PRODUCT:
+                    $cacheKey .= 'PRD_';
+                    $currentCategory = Mage::registry( 'current_category' );
+                    $currentProduct  = Mage::registry( 'current_product' );
+                    break;
+
+                case self::BLOCK_GROUP_LAYERED_NAV:
+                    $cacheKey      .= 'LNAV_';
+                    $currentCategory = Mage::registry( 'current_category' );
+                    break;
+
+                case self::BLOCK_GROUP_CMS_PAGE:
+                    $cacheKey .= 'CMSP_';
+                    $cmsPage    = Mage::getSingleton( 'cms/page' );
+                    if ($cmsPage instanceof Mage_Cms_Model_Page) {
+                        $cacheTags[] = Mage_Cms_Model_Page::CACHE_TAG . '_' . $cmsPage->getId();
+                        $cacheKey  .= 'P' . $cmsPage->getId() . '_';
                     }
-                }
-            } else {
-                // Caching of this block is disabled in config
-                $cacheLifeTime   = null;
+                    break;
+
+                case self::BLOCK_GROUP_CMS_BLOCK:
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $cacheKey .= 'CMSB_';
+                    $cacheKeyData .= '|b' . $block->getBlockId(); // Example block_id: 'after_body_start'
+                    $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
+                    break;
+
             }
-        }
-        elseif ( $block instanceof Mage_Catalog_Block_Product_View ) {
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/product_detail/enable_cache') ) {
-                $currentCategory = Mage::registry('current_category');
-                $currentProduct  = Mage::registry('current_product');
-                $cacheKeyData    = $this->getBlockCacheKeyData( $block, $store, $currentCategory, $currentProduct );
-                $cacheTags       = $this->getBlockCacheTags( $currentCategory, $currentProduct );
-                $cacheLifeTime   = intval(Mage::getStoreConfig(self::CONFIG_SECTION.'/product_detail/lifetime'));
-                if ( $currentCategory instanceof Mage_Catalog_Model_Category ) {
-                    $keyPrefix .= 'CAT'.$currentCategory->getId().'_';
-                }
-                if ( $currentProduct instanceof Mage_Catalog_Model_Product ) {
-                    $keyPrefix .= 'PRD'.$currentProduct->getId().'_';
-                }
-            } else {
-                // Caching of this block is disabled in config
-                $cacheLifeTime   = null;
+            if ($currentCategory instanceof Mage_Catalog_Model_Category) {
+                $cacheKey .= 'C' . $currentCategory->getId();
             }
-        }
-        elseif ( $block instanceof Mage_Catalog_Block_Layer_View || $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View ) {
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/layered_navigation/enable_cache') ) {
-                $currentCategory = Mage::registry('current_category');
-                $cacheKeyData = $this->getBlockCacheKeyData( $block, $store, $currentCategory );
-                $cacheTags    = $this->getBlockCacheTags( $currentCategory );
-                $keyPrefix .= 'LNAV'.$currentCategory->getId().'_';
-                $cacheLifeTime = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/layered_navigation/lifetime' ) );
+            if ($currentProduct instanceof Mage_Catalog_Model_Product) {
+                $cacheKey .= 'P' . $currentProduct->getId();
             }
-        }
-        elseif ( $block instanceof Mage_Cms_Block_Page ) {
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_page/enable_cache') ) {
-                $cacheKeyData = $this->getBlockCacheKeyData( $block, $store );
-                $cacheTags    = $this->getBlockCacheTags();
-                $cmsPage      = Mage::getSingleton( 'cms/page' );
-                if ( $cmsPage instanceof Mage_Cms_Model_Page ) {
-                    $cacheTags[] = Mage_Cms_Model_Page::CACHE_TAG . '_' . $cmsPage->getId();
-                    $keyPrefix .= 'CMSP'.$cmsPage->getId().'_';
-                }
-                $cacheLifeTime = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/cms_page/lifetime' ) );
-            }
-        }
-        elseif ( $block instanceof Mage_Cms_Block_Block || $block instanceof Mage_Cms_Block_Widget_Block ) {
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/cms_block/enable_cache') ) {
-                $cacheKeyData   = $this->getBlockCacheKeyData( $block, $store );
-                /** @noinspection PhpUndefinedMethodInspection */
-                $cacheKeyData[] = $block->getBlockId();
-                $cacheTags      = $this->getBlockCacheTags();
-                $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
-                $cacheLifeTime  = intval( Mage::getStoreConfig( self::CONFIG_SECTION . '/cms_block/lifetime' ) );
-                $keyPrefix .= 'CMSB_';
-            }
-        }
-        if ( false !== $cacheLifeTime ) {
-            $cacheKey = $keyPrefix . md5( implode('|', $cacheKeyData) );
-            if ( $isCacheWarmer && Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/refresh_on_visit') ) {
+            $cacheKeyData .= $this->getBlockCacheKeyData( $block, $store, $currentCategory, $currentProduct );
+            $cacheKey .= '_' . md5( $cacheKeyData );
+
+            $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
+
+            if ( $this->isCacheWarmer() && Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/refresh_on_visit') ) {
                 Mage::app()->removeCache( $cacheKey );
             }
+
             /** @noinspection PhpUndefinedMethodInspection */
-            $block->setCacheLifetime( $cacheLifeTime );
-            if ( null !== $cacheLifeTime ) {
-                /** @noinspection PhpUndefinedMethodInspection */
-                $block->setCacheKey( $cacheKey );
-                /** @noinspection PhpUndefinedMethodInspection */
-                $block->setCacheTags( $cacheTags );
-            }
+            $block->setCacheKey( $cacheKey );
+            /** @noinspection PhpUndefinedMethodInspection */
+            $block->setCacheTags( $cacheTags );
         }
     }
 
@@ -274,26 +284,31 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @param Mage_Core_Model_Store $store
      * @param Mage_Catalog_Model_Category|null $category
      * @param Mage_Catalog_Model_Product|null $product
-     * @return array;
+     * @return string;
      */
     protected function getBlockCacheKeyData( $block, $store, $category=null, $product=null ) {
         /** @noinspection PhpUndefinedMethodInspection */
         $currentUrl = $this->filterUrl();
         /** @noinspection PhpUndefinedMethodInspection */
-        $result = array( $currentUrl, // covers secure, store code, url param, page nr
-                         get_class( $block ),
-                         $block->getTemplate(),
-                         Mage::getSingleton('customer/session')->getCustomerGroupId(),
-                         $store->getCurrentCurrencyCode() );
+        $result = '|' . $currentUrl; // covers secure, url param, page nr
+        $result .= '|' . get_class( $block );
+        $result .= '|' . $block->getTemplate();
+        $result .= '|' . Mage::getSingleton('customer/session')->getCustomerGroupId();
+        $result .= '|' . $store->getId();
+        $result .= '|' . $store->getCurrentCurrencyCode();
         if ( $category instanceof Mage_Catalog_Model_Category ) {
-            $result[] = 'c'.$category->getId();
+            $result .= '|c' . $category->getId();
         }
         if ( $product instanceof Mage_Catalog_Model_Product ) {
-            $result[] = 'p'.$product->getId();
+            $result .= '|p' . $product->getId();
         }
         return $result;
     }
 
+    /**
+     * @param string|null $url
+     * @return string
+     */
     protected function filterUrl( $url=null ) {
         if ( is_null($url) ) {
             /** @noinspection PhpUndefinedMethodInspection */
@@ -311,21 +326,26 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param array $cacheTags
      * @param Mage_Catalog_Model_Category|null $category
      * @param Mage_Catalog_Model_Product|null $product
-     * @return array;
      */
-    protected function getBlockCacheTags( $category=null, $product=null ) {
-        $result = array( self::BLOCK_CACHE_TAG );
-        $result[] = Mage_Core_Model_Translate::CACHE_TAG;
+    protected function addBlockCacheTags( &$cacheTags, $category=null, $product=null ) {
+        $cacheTags[] = Mage_Core_Block_Abstract::CACHE_GROUP;
+        $cacheTags[] = Mage_Core_Model_Translate::CACHE_TAG;
         if ( $category instanceof Mage_Catalog_Model_Category ) {
-            $result = array_merge( $result, $category->getCacheIdTags() );
+            $addTags = $category->getCacheIdTags();
+            foreach( $addTags as $tag) { // a little faster then array_merge
+                $cacheTags[] = $tag;
+            }
         }
         if ( $product instanceof Mage_Catalog_Model_Product ) {
-            $result[] = Mage_Catalog_Model_Product::CACHE_TAG.'_'.$product->getId();
-            $result = array_merge( $result, $product->getCacheIdTags() );
+            $cacheTags[] = Mage_Catalog_Model_Product::CACHE_TAG.'_'.$product->getId();
+            $addTags = $product->getCacheIdTags();
+            foreach( $addTags as $tag) { // a little faster then array_merge
+                $cacheTags[] = $tag;
+            }
         }
-        return $result;
     }
 
     /**
@@ -369,5 +389,15 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             }
         }
         return strval($this->logSuffix);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isCacheWarmer() {
+        $cacheWarmerUserAgent = Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/user_agent');
+        return ( !empty($cacheWarmerUserAgent) &&
+                 !empty($_SERVER['HTTP_USER_AGENT']) &&
+                 false !== strpos($_SERVER['HTTP_USER_AGENT'],$cacheWarmerUserAgent) );
     }
 }
