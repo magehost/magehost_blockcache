@@ -24,13 +24,18 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
     protected function _getHeaderHtml($element) {
         $result = '';
         $goodBackEnds = array();
-        $currentBackEnd = strval( Mage::getConfig()->getNode('global/cache/backend') );
+        $currentBackEnd = get_class( Mage::app()->getCacheInstance()->getFrontEnd()->getBackend() );
+        $currentBackEnd = preg_replace( '/^Zend_Cache_Backend_/','', $currentBackEnd );
         $message = '';
         $dependClasses = array('Cm_Cache_Backend_File', 'Cm_Cache_Backend_Redis');
+        $optionClasses = array();
         $or = ' ' . $this->__('or') . ' ';
         foreach( $dependClasses as $dependClass ) {
+            $ourClass = 'JeroenVermeulen_' . $dependClass;
             if ( mageFindClassFile($dependClass) ) {
-                $goodBackEnds[] = 'JeroenVermeulen_' . $dependClass;
+                $goodBackEnds[] = $ourClass;
+            } else {
+                $optionClasses[$dependClass] = $ourClass;
             }
         }
         if ( empty($goodBackEnds) ) {
@@ -38,8 +43,12 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
             $message .= '<br />' . $this->__("This extension requires one of these classes to exist: %s", join($or,$dependClasses));
         } elseif ( ! in_array( $currentBackEnd, $goodBackEnds ) ) {
             $message .= 'ERROR:';
-            $message .= '<br />' . $this->__("This extension requires cache backend: %s", join($or,$goodBackEnds));
+            $message .= '<br />' . $this->__("This extension requires cache backend: %s", join($or,$goodBackEnds) );
             $message .= '<br />' . $this->__("Current setting: %s", $currentBackEnd);
+        }
+        $message .= '<br />';
+        foreach( $optionClasses as $dependClass => $ourClass ) {
+            $message .= '<br />' . $this->__("If you would install '%s' you could also use '%s'.", $dependClass, $ourClass );
         }
         if ( !empty($message) ) {
             $result.= sprintf( '<ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul>', $message );
