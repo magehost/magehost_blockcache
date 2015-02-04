@@ -1,17 +1,19 @@
-# JeroenVermeulen_BlockCache
+## JeroenVermeulen_BlockCache
 Performance improvement by caching big blocks in Magento
 
-Config Settings:
+### Config Settings:
 
 `System > Configuration > ADVANCED > JeroenVermeulen BlockCache`
 
-This Magento Extension adds functionality to cache:
+### Cache Big Blocks
+This Magento Extension adds functionality to cache these blocks which are normally not cached in Magento:
 
 * Category List Page: Whole content area
 * Product Detail Page: Whole content area
 * CMS Page: Whole content area
 * Cms Static Blocks & Widgets (disabled by default)
 
+### Log & Filter Cache Flushes
 This Extension also adds functionality to log & filter cache flushes:
 
 * On Category change
