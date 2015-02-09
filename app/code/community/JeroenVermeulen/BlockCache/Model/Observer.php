@@ -45,7 +45,8 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         $blockGroup = false;
-        if ($block instanceof Mage_Catalog_Block_Category_View) {
+        if ($block instanceof Mage_Catalog_Block_Category_View ||
+            $block instanceof JoomlArt_JmProducts_Block_List ) {
             $blockGroup = self::BLOCK_GROUP_CATEGORY;
         } elseif ($block instanceof Mage_Catalog_Block_Product_View) {
             $blockGroup = self::BLOCK_GROUP_PRODUCT;
