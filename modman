@@ -15,3 +15,7 @@ app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml      app/
 # ---- Cm_Cache_Backend_File
 # Magento Community Module     - Recursive Dir - JeroenVermeulen/Cm
 app/code/community/JeroenVermeulen/Cm                                       app/code/community/JeroenVermeulen/Cm
+
+# ---- Shell Clean Tool
+# Magento other                - File          - shell/jv_redis_clean.php
+shell/jv_redis_clean.php                                                    shell/jv_redis_clean.php
