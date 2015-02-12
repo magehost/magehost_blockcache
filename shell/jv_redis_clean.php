@@ -1,12 +1,8 @@
 <?php
-$magRoot = realpath( __DIR__ . '/../..' );
-require $magRoot . '/lib/Credis/Client.php';
-//require $magRoot . '/lib/Zend/Cache/Backend/Interface.php';
-//require $magRoot . '/lib/Zend/Cache/Backend/ExtendedInterface.php';
-//require $magRoot . '/lib/Zend/Cache/Backend.php';
-//require $magRoot . '/app/code/community/Cm/Cache/Backend/Redis.php';
+$mageRoot = dirname(dirname(__FILE__));
+require $mageRoot . '/lib/Credis/Client.php';
 
-$client = Redis_Connect( $magRoot . '/app/etc/local.xml' );
+$client = Redis_Connect( $mageRoot . '/app/etc/local.xml' );
 $client->flushdb();
 exit;
 
