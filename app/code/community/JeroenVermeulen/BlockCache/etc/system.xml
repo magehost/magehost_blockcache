@@ -243,7 +243,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <instanceof translate="label comment">
-                            <label>Match Class Instance Of</label>
+                            <label>Match Block Class Instance Of</label>
                             <frontend_type>textarea</frontend_type>
                             <comment>Enter one class per line</comment>
                             <sort_order>5</sort_order>
@@ -282,7 +282,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <instanceof translate="label comment">
-                            <label>Match Class Instance Of</label>
+                            <label>Block Class Instance Of</label>
                             <frontend_type>textarea</frontend_type>
                             <comment>Enter one class per line</comment>
                             <sort_order>5</sort_order>
@@ -321,7 +321,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <instanceof translate="label comment">
-                            <label>Match Class Instance Of</label>
+                            <label>Block Class Instance Of</label>
                             <frontend_type>textarea</frontend_type>
                             <comment>Enter one class per line</comment>
                             <sort_order>5</sort_order>
@@ -360,7 +360,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <instanceof translate="label comment">
-                            <label>Match Class Instance Of</label>
+                            <label>Block Class Instance Of</label>
                             <frontend_type>textarea</frontend_type>
                             <comment>Enter one class per line</comment>
                             <sort_order>5</sort_order>
@@ -399,7 +399,7 @@
                     <show_in_store>1</show_in_store>
                     <fields>
                         <instanceof translate="label comment">
-                            <label>Match Class Instance Of</label>
+                            <label>Block Class Instance Of</label>
                             <frontend_type>textarea</frontend_type>
                             <comment>Enter one class per line</comment>
                             <sort_order>5</sort_order>
@@ -542,7 +542,7 @@
                 </flushes>
                 <cache_warmer translate="label" module="jeroenvermeulen_blockcache">
                     <label>Cache Warmer</label>
-                    <sort_order>700</sort_order>
+                    <sort_order>1100</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>

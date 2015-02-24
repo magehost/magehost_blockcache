@@ -66,6 +66,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $matches = explode("\n",$matches);
                 foreach( $matches as $match ) {
                     $match = trim($match);
+                    if ( empty($match) ) {
+                        continue;
+                    }
+                    if ( false !== strpos($match,'/') ) {
+                        $match = Mage::getConfig()->getBlockClassName($match);
+                    }
                     if ( !empty($match) && $block instanceof $match ) {
                         $blockGroup = constant( 'self::BLOCK_GROUP_CUSTOM_'.$c );
                     }
