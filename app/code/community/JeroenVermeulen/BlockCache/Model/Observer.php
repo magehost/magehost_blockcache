@@ -22,6 +22,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     const BLOCK_GROUP_CMS_PAGE    = 'cms_page';
     const BLOCK_GROUP_LAYERED_NAV = 'layered_navigation';
     const BLOCK_GROUP_CMS_BLOCK   = 'cms_block';
+    const BLOCK_GROUP_CUSTOM_1    = 'custom_1';
 
     /** @var null|string */
     var $logSuffix = null;
@@ -58,6 +59,18 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         } elseif ($block instanceof Mage_Cms_Block_Block ||
                   $block instanceof Mage_Cms_Block_Widget_Block) {
             $blockGroup = self::BLOCK_GROUP_CMS_BLOCK;
+        }
+        for ( $c=1; $c<=5; $c++ ) {
+            $matches = trim( Mage::getStoreConfig(self::CONFIG_SECTION.'/custom_'.$c.'/instanceof') );
+            if ( $matches ) {
+                $matches = explode("\n",$matches);
+                foreach( $matches as $match ) {
+                    $match = trim($match);
+                    if ( !empty($match) && $block instanceof $match ) {
+                        $blockGroup = constant( 'self::BLOCK_GROUP_CUSTOM_'.$c );
+                    }
+                }
+            }
         }
         if ( false === $blockGroup ) {
             // It is a block group we don't change caching for.
@@ -125,6 +138,20 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                     $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
                     break;
 
+                case self::BLOCK_GROUP_CUSTOM_1:
+                case self::BLOCK_GROUP_CUSTOM_2:
+                case self::BLOCK_GROUP_CUSTOM_3:
+                case self::BLOCK_GROUP_CUSTOM_4:
+                case self::BLOCK_GROUP_CUSTOM_5:
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    // We don't know what it exactly is the user configured, so we throw everything in
+                    $cacheKey .= strtoupper($blockGroup).'_';
+                    $currentCategory = Mage::registry( 'current_category' );
+                    $currentProduct  = Mage::registry( 'current_product' );
+                    $allData = $block->getData();
+                    unset( $allData['cache_lifetime'] );
+                    $cacheKeyData .= '|D'.json_encode($allData,0,3); // All block data, 3 levels max
+                    break;
             }
             if ($currentCategory instanceof Mage_Catalog_Model_Category) {
                 $cacheKey .= 'C' . $currentCategory->getId();
