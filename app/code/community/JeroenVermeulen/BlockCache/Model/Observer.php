@@ -23,6 +23,10 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     const BLOCK_GROUP_LAYERED_NAV = 'layered_navigation';
     const BLOCK_GROUP_CMS_BLOCK   = 'cms_block';
     const BLOCK_GROUP_CUSTOM_1    = 'custom_1';
+    const BLOCK_GROUP_CUSTOM_2    = 'custom_2';
+    const BLOCK_GROUP_CUSTOM_3    = 'custom_3';
+    const BLOCK_GROUP_CUSTOM_4    = 'custom_4';
+    const BLOCK_GROUP_CUSTOM_5    = 'custom_5';
 
     /** @var null|string */
     var $logSuffix = null;
