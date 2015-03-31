@@ -30,21 +30,49 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
     /** @var null|string */
     var $logSuffix = null;
+    /** @var string[] */
     var $filterUrlCache = array();
 
     /**
      * Apply cache settings to block
      * @param Varien_Event_Observer $observer
      */
-    function coreBlockAbstractToHtmlBefore( $observer )
-    {
-        /** @var Mage_Core_Block_Template $block */
+    function coreBlockAbstractToHtmlBefore( $observer ) {
         /** @noinspection PhpUndefinedMethodInspection */
         $block         = $observer->getBlock();
+        $currentUrl    = Mage::helper('core/url')->getCurrentUrl();
+        $this->applyCacheSettings( $block, $currentUrl );
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $cacheKey = $block->getCacheKey();
+        if ( $cacheKey ) {
+            if ( preg_match( '/\?.*jvflush/', $currentUrl ) ) {
+                Mage::app()->removeCache( $cacheKey );
+            }
+            elseif ( $this->isCacheWarmer() &&
+                     2 == Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/refresh_on_visit') ) {
+                Mage::app()->removeCache( $cacheKey );
+            }
+            elseif ( 0 === strpos($cacheKey,'JV_') &&   // A block we manage caching for
+                     $this->isCacheWarmer() &&
+                     1 == Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/refresh_on_visit') ) {
+                Mage::app()->removeCache( $cacheKey );
+            }
+        }
+    }
+
+    /**
+     * Apply cache settings to block
+     * @param Mage_Core_Block_Template $block
+     * @param string $currentUrl
+     */
+    function applyCacheSettings( $block, $currentUrl )
+    {
         $store         = Mage::app()->getStore();
 
+        $filterUrl = $this->filterUrl( $currentUrl );
         if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/cache_when_url_param')
-             && ( false !== strpos($this->filterUrl(),'?') ) ) {
+             && ( false !== strpos($filterUrl,'?') ) ) {
             // Caching of page with url param disabled in config, and this page has them.
             return;
         }
@@ -169,14 +197,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             if ($currentProduct instanceof Mage_Catalog_Model_Product) {
                 $cacheKey .= 'P' . $currentProduct->getId();
             }
-            $cacheKeyData .= $this->getBlockCacheKeyData( $block, $store, $currentCategory, $currentProduct );
+            $cacheKeyData .= $this->getBlockCacheKeyData( $block, $store, $currentCategory,
+                                                          $currentProduct, $filterUrl );
             $cacheKey .= '_' . md5( $cacheKeyData );
 
             $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
-
-            if ( $this->isCacheWarmer() && Mage::getStoreConfig(self::CONFIG_SECTION.'/cache_warmer/refresh_on_visit') ) {
-                Mage::app()->removeCache( $cacheKey );
-            }
 
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheKey( $cacheKey );
@@ -322,13 +347,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @param Mage_Core_Model_Store $store
      * @param Mage_Catalog_Model_Category|null $category
      * @param Mage_Catalog_Model_Product|null $product
+     * @param string $filterUrl
      * @return string;
      */
-    protected function getBlockCacheKeyData( $block, $store, $category=null, $product=null ) {
+    protected function getBlockCacheKeyData( $block, $store, $category=null, $product=null, $filterUrl ) {
         /** @noinspection PhpUndefinedMethodInspection */
-        $currentUrl = $this->filterUrl();
-        /** @noinspection PhpUndefinedMethodInspection */
-        $result = '|' . $currentUrl; // covers secure, url param, page nr
+        $result = '|' . $filterUrl; // covers secure, url param, page nr
         $result .= '|' . get_class( $block );
         $result .= '|' . $block->getTemplate();
         $result .= '|' . Mage::getSingleton('customer/session')->getCustomerGroupId();
@@ -344,17 +368,14 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @param string|null $url
+     * @param string $url
      * @return string
      */
-    protected function filterUrl( $url=null ) {
-        if ( is_null($url) ) {
-            /** @noinspection PhpUndefinedMethodInspection */
-            $url = Mage::helper('core/url')->getCurrentUrl();
-        }
+    protected function filterUrl( $url ) {
         if ( !isset($this->filterUrlCache[$url]) ) {
             $filterUrl = $url;
             $filterUrl = preg_replace('/(\?|&)(utm_source|utm_medium|utm_campaign|gclid|cx|ie|cof|siteurl)=[^&]+/ms','$1',$filterUrl);
+            $filterUrl = preg_replace('/(\?|&)jvflush\b/','',$filterUrl);
             $filterUrl = preg_replace('/\?&+/','?',$filterUrl);
             $filterUrl = preg_replace('/\&{2,}/','&',$filterUrl);
             $filterUrl = preg_replace('/\?$/','',$filterUrl);

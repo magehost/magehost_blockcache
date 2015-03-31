@@ -1,5 +1,6 @@
 <?php
 $mageRoot = dirname(dirname(__FILE__));
+/** @noinspection PhpIncludeInspection */
 require $mageRoot . '/lib/Credis/Client.php';
 
 $client = Redis_Connect( $mageRoot . '/app/etc/local.xml' );
@@ -14,8 +15,11 @@ function Redis_Connect( $xmlFile )
     }
 
     $xml  = simplexml_load_file( $xmlFile, 'SimpleXMLElement', LIBXML_NOCDATA );
+    /** @noinspection PhpUndefinedFieldInspection */
     $host = strval( $xml->global->cache->backend_options->server );
+    /** @noinspection PhpUndefinedFieldInspection */
     $port = strval( $xml->global->cache->backend_options->port );
+    /** @noinspection PhpUndefinedFieldInspection */
     $db   = strval( $xml->global->cache->backend_options->database );
     if ( empty( $host ) )
     {

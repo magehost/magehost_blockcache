@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.9.3</version>
+            <version>1.10.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -84,6 +84,54 @@
             </controller_front_send_response_before>
         </events>
     </frontend>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <!-- URL:  http://[MAGROOT]/admin/[CONTROLLER]/[ACTION]/key/xxxxxxxxxxx/ -->
+                        <JeroenVermeulen_BlockCache after="Mage_Adminhtml">JeroenVermeulen_BlockCache_Adminhtml</JeroenVermeulen_BlockCache>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <jeroenvermeulen_blockcache module="jeroenvermeulen_blockcache">
+                    <file>jeroenvermeulen/blockcache.xml</file>
+                </jeroenvermeulen_blockcache>
+            </updates>
+        </layout>
+        <menu>
+            <system>
+                <children>
+                    <!-- URL:  http://[MAGROOT]/admin/jv_blockcache/flush/key/xxxxxxxxxxx/ -->
+                    <jv_blockcache_flush>
+                        <title>JV: Flush URL from Cache</title>
+                        <action>adminhtml/jv_blockcache/flush</action>
+                        <sort_order>90</sort_order>
+                    </jv_blockcache_flush>
+                </children>
+            </system>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <jv_blockcache_flush>
+                                    <title>JV: Flush URL</title>
+                                </jv_blockcache_flush>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
     <default>
         <jeroenvermeulen_blockcache>
             <general>

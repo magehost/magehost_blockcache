@@ -12,6 +12,14 @@ app/code/community/JeroenVermeulen/BlockCache/                              app/
 # Magento User Interface       - File          - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
 app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml      app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml
 
+# ---- Backend layout
+# Magento User Interface       - File          - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
+app/design/adminhtml/default/default/layout/jeroenvermeulen/blockcache.xml  app/design/adminhtml/default/default/layout/jeroenvermeulen/blockcache.xml
+
+# ---- Backend Templates
+# Magento User Interface       - Recursive Dir - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
+app/design/adminhtml/default/default/template/jeroenvermeulen/blockcache    app/design/adminhtml/default/default/template/jeroenvermeulen/blockcache
+
 # ---- Cm_Cache_Backend_File
 # Magento Community Module     - Recursive Dir - JeroenVermeulen/Cm
 app/code/community/JeroenVermeulen/Cm                                       app/code/community/JeroenVermeulen/Cm
