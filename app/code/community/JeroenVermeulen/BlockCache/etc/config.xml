@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.10.3</version>
+            <version>1.10.4</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -35,6 +35,15 @@
             </jeroenvermeulen_blockcache>
         </helpers>
         <events>
+            <controller_front_init_before>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <method>controllerFrontInitBefore</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </controller_front_init_before>
             <jv_clean_backend_cache>
                 <observers>
                     <jeroenvermeulen_blockcache>

@@ -30,23 +30,32 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
     /** @var null|string */
     var $logSuffix = null;
-    /** @var string[] */
-    var $filterUrlCache = array();
+    /** @var string */
+    var $currentUrl = null;
+    /** @var string */
+    var $filterUrl = null;
 
     /**
      * Apply cache settings to block
      * @param Varien_Event_Observer $observer
      */
     function coreBlockAbstractToHtmlBefore( $observer ) {
+        /** @var $block Mage_Core_Block_Abstract */
         /** @noinspection PhpUndefinedMethodInspection */
         $block         = $observer->getBlock();
-        $currentUrl    = Mage::helper('core/url')->getCurrentUrl();
-        $this->applyCacheSettings( $block, $currentUrl );
+
+        $this->applyCacheSettings( $block );
 
         /** @noinspection PhpUndefinedMethodInspection */
         $cacheKey = $block->getCacheKey();
         if ( $cacheKey ) {
-            if ( preg_match( '/\?.*jvflush/', $currentUrl ) || !empty($_COOKIE['jvflush']) ) {
+            /**
+             * We need this extra cache tag to be able to flush per URL later on.
+             * This is the only way because some cache keys or blocks can be session dependent.
+             */
+            $block->addCacheTag( 'URL_' . md5($this->getFilterUrl()) );
+
+            if ( $this->isFlushUrl() ) {
                 Mage::app()->removeCache( $cacheKey );
             }
             elseif ( $this->isCacheWarmer() &&
@@ -63,14 +72,13 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
     /**
      * Apply cache settings to block
-     * @param Mage_Core_Block_Template $block
-     * @param string $currentUrl
+     * @param Mage_Core_Block_Abstract $block
      */
-    function applyCacheSettings( $block, $currentUrl )
+    function applyCacheSettings( &$block )
     {
         $store         = Mage::app()->getStore();
+        $filterUrl     = $this->getFilterUrl();
 
-        $filterUrl = $this->filterUrl( $currentUrl );
         if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/cache_when_url_param')
              && ( false !== strpos($filterUrl,'?') ) ) {
             // Caching of page with url param disabled in config, and this page has them.
@@ -78,13 +86,15 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
 
         $blockGroup = false;
+        /** @noinspection PhpUndefinedClassInspection */
         if ($block instanceof Mage_Catalog_Block_Category_View ||
             $block instanceof JoomlArt_JmProducts_Block_List ) {
             $blockGroup = self::BLOCK_GROUP_CATEGORY;
         } elseif ($block instanceof Mage_Catalog_Block_Product_View) {
             $blockGroup = self::BLOCK_GROUP_PRODUCT;
-        } elseif ($block instanceof Mage_Catalog_Block_Layer_View ||
-                  $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View) {
+        } /** @noinspection PhpUndefinedClassInspection */
+        elseif ($block instanceof Mage_Catalog_Block_Layer_View ||
+                $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View) {
             $blockGroup = self::BLOCK_GROUP_LAYERED_NAV;
         } elseif ($block instanceof Mage_Cms_Block_Page) {
             $blockGroup = self::BLOCK_GROUP_CMS_PAGE;
@@ -198,7 +208,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $cacheKey .= 'P' . $currentProduct->getId();
             }
             $cacheKeyData .= $this->getBlockCacheKeyData( $block, $store, $currentCategory,
-                                                          $currentProduct, $filterUrl );
+                $currentProduct );
             $cacheKey .= '_' . md5( $cacheKeyData );
 
             $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
@@ -207,6 +217,18 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $block->setCacheKey( $cacheKey );
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheTags( $cacheTags );
+        }
+    }
+
+    /**
+     * Check if we should flush by URL tag.
+     *
+     * @param Varien_Event $observer
+     */
+    public function controllerFrontInitBefore( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
+        if ( $this->isFlushUrl() ) {
+            $cacheTag  = 'URL_' . md5( $this->getFilterUrl() );
+            Mage::app()->cleanCache( array( $cacheTag ) );
         }
     }
 
@@ -241,13 +263,13 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 // Fix hidden inputs in forms
                 $matches = array();
                 if ( preg_match_all('#<input\s[^>]*name=[\'"]{0,1}form_key[\'"]{0,1}[^>]*>#i',$html,$matches,PREG_SET_ORDER) ) {
-                     foreach( $matches as $matchData ) {
-                         $oldTag = $matchData[0];
-                         $newTag = preg_replace('#value=[\'"]{0,1}[a-zA-Z0-9]+[\'"]{0,1}#i','value="'.$newFormKey.'"',$oldTag);
-                         if ( $oldTag != $newTag ) {
-                             $html = str_replace( $oldTag, $newTag, $html );
-                         }
-                     }
+                    foreach( $matches as $matchData ) {
+                        $oldTag = $matchData[0];
+                        $newTag = preg_replace('#value=[\'"]{0,1}[a-zA-Z0-9]+[\'"]{0,1}#i','value="'.$newFormKey.'"',$oldTag);
+                        if ( $oldTag != $newTag ) {
+                            $html = str_replace( $oldTag, $newTag, $html );
+                        }
+                    }
                 }
                 $response->setBody($html);
             }
@@ -347,12 +369,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @param Mage_Core_Model_Store $store
      * @param Mage_Catalog_Model_Category|null $category
      * @param Mage_Catalog_Model_Product|null $product
-     * @param string $filterUrl
      * @return string;
      */
-    protected function getBlockCacheKeyData( $block, $store, $category=null, $product=null, $filterUrl ) {
+    protected function getBlockCacheKeyData( $block, $store, $category=null, $product=null ) {
         /** @noinspection PhpUndefinedMethodInspection */
-        $result = '|' . $filterUrl; // covers secure, url param, page nr
+        $result = '|' . $this->getFilterUrl(); // covers secure, url param, page nr
         $result .= '|' . get_class( $block );
         $result .= '|' . $block->getTemplate();
         $result .= '|' . Mage::getSingleton('customer/session')->getCustomerGroupId();
@@ -368,20 +389,29 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @param string $url
      * @return string
      */
-    protected function filterUrl( $url ) {
-        if ( !isset($this->filterUrlCache[$url]) ) {
-            $filterUrl = $url;
+    protected function getCurrentUrl() {
+        if ( empty( $this->currentUrl ) ){
+            $this->currentUrl = Mage::helper('core/url')->getCurrentUrl();
+        }
+        return $this->currentUrl;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFilterUrl() {
+        if ( empty($this->filterUrl) ) {
+            $filterUrl = $this->getCurrentUrl();
             $filterUrl = preg_replace('/(\?|&)(utm_source|utm_medium|utm_campaign|gclid|cx|ie|cof|siteurl)=[^&]+/ms','$1',$filterUrl);
             $filterUrl = preg_replace('/(\?|&)jvflush\b/','',$filterUrl);
             $filterUrl = preg_replace('/\?&+/','?',$filterUrl);
             $filterUrl = preg_replace('/\&{2,}/','&',$filterUrl);
             $filterUrl = preg_replace('/\?$/','',$filterUrl);
-            $this->filterUrlCache[$url] = $filterUrl;
+            $this->filterUrl = $filterUrl;
         }
-        return $this->filterUrlCache[$url];
+        return $this->filterUrl;
     }
 
     /**
@@ -459,4 +489,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                  !empty($_SERVER['HTTP_USER_AGENT']) &&
                  false !== strpos($_SERVER['HTTP_USER_AGENT'],$cacheWarmerUserAgent) );
     }
+
+    /**
+     * @return bool
+     */
+    protected function isFlushUrl() {
+        return ( preg_match( '/\?.*jvflush/', $this->getCurrentUrl() ) || !empty( $_COOKIE['jvflush'] ) );
+    }
+
 }
