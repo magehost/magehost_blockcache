@@ -22,7 +22,6 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
     public function flush_postAction()
     {
         $session     = Mage::getSingleton( 'core/session' );
-        $readAdapter = Mage::getSingleton('core/resource')->getConnection('core_read');
         $post        = $this->getRequest()->getPost();
         $url         = trim( $post['flush_form']['url'] );
         if ( !preg_match('|https?://|',$url) ) {
@@ -33,17 +32,17 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
             $session->addError( $this->__('Invalid URL: <b>%s</b>.',$url) );
             $session->setData( 'JeroenVermeulen_BlockCache_PurgeURL', '' );
         } else {
-            Mage::log( sprintf( 'JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController "%s"', $url ),
-                Zend_Log::INFO,
-                'system.log' );
-
             $flushUrl = $url;
             if ( false === strpos($flushUrl,'?') ) {
                 $flushUrl .= '?jvflush';
             } else {
                 $flushUrl .= '&jvflush';
             }
+            Mage::log( sprintf( 'JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController "%s"', $flushUrl ),
+                Zend_Log::INFO,
+                'system.log' );
             $httpClient = new Zend_Http_Client($flushUrl);
+            $httpClient->setCookie( 'jvflush', '1' );
             $httpClient->setConfig( array('httpversion' => Zend_Http_Client::HTTP_0) );
             $response = $httpClient->request();
 

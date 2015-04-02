@@ -46,7 +46,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         /** @noinspection PhpUndefinedMethodInspection */
         $cacheKey = $block->getCacheKey();
         if ( $cacheKey ) {
-            if ( preg_match( '/\?.*jvflush/', $currentUrl ) ) {
+            if ( preg_match( '/\?.*jvflush/', $currentUrl ) || !empty($_COOKIE['jvflush']) ) {
                 Mage::app()->removeCache( $cacheKey );
             }
             elseif ( $this->isCacheWarmer() &&
