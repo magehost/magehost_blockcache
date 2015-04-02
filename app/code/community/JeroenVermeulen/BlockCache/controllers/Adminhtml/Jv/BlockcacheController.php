@@ -46,7 +46,13 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
             $httpClient->setConfig( array('httpversion' => Zend_Http_Client::HTTP_0) );
             $response = $httpClient->request();
 
-            $sLink = sprintf( '<a href="%s" target="_blank">%s</a>', $url, $url );
+            $freshUrl = $url;
+            if ( false === strpos($freshUrl,'?') ) {
+                $freshUrl .= '?'.time();
+            } else {
+                $freshUrl .= '&'.time();
+            }
+            $sLink = sprintf( '<a href="%s" target="_blank">%s</a>', $freshUrl, $url );
 
             if ( $response->isSuccessful() ) {
                 $msg = $this->__( 'The URL %s has been flushed.', $sLink );
