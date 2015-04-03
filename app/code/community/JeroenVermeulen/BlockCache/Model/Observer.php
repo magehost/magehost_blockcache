@@ -53,7 +53,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
              * We need this extra cache tag to be able to flush per URL later on.
              * This is the only way because some cache keys or blocks can be session dependent.
              */
-            $block->addCacheTag( 'URL_' . md5($this->getFilterUrl()) );
+            $tags = $block->getCacheTags();
+            $tags[] = 'URL_' . md5($this->getFilterUrl();
+            $block->setCacheTags( $tags );
 
             if ( $this->isFlushUrl() ) {
                 Mage::app()->removeCache( $cacheKey );
