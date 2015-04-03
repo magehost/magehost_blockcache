@@ -45,7 +45,7 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
             $httpClient->setCookie( 'jvflush', '1' );
             $httpClient->setConfig( array('httpversion' => Zend_Http_Client::HTTP_0) );
             $response = $httpClient->request();
-            
+
             $sLink = sprintf( '<a href="%s" target="_blank">%s</a>', $url, $url );
 
             if ( $response->isSuccessful() ) {
