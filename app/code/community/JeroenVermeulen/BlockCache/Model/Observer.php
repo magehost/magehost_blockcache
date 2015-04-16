@@ -87,6 +87,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             return;
         }
 
+        if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/cache_when_customer_logged_in')
+             && Mage::getSingleton('customer/session')->isLoggedIn() ) {
+            // Caching when customer logged in disabled in config, and customer is logged in.
+            return;
+        }
+
         $blockGroup = false;
         /** @noinspection PhpUndefinedClassInspection */
         if ($block instanceof Mage_Catalog_Block_Category_View ||
