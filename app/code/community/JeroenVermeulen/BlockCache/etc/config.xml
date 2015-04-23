@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.11.1</version>
+            <version>1.11.2</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -211,7 +211,7 @@
             </flushes>
             <cache_warmer>
                 <user_agent>Cache Warmer</user_agent>
-                <refresh_on_visit>1</refresh_on_visit>
+                <refresh_on_visit>0</refresh_on_visit>
             </cache_warmer>
         </jeroenvermeulen_blockcache>
     </default>
