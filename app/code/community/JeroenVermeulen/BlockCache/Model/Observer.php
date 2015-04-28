@@ -56,6 +56,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
              */
             $tags = $block->getCacheTags();
             $tags[] = 'URL_' . md5($this->getFilterUrl());
+            /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheTags( $tags );
 
             if ( $this->isFlushUrl() ) {
@@ -223,17 +224,6 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
             $cacheTags = array_unique( $cacheTags );
 
-            // Remove category tags if adding disabled
-            $addCategoryTag = Mage::getStoreConfig(self::CONFIG_SECTION.'/'.$blockGroup.'/add_category_tag');
-            if ( ! is_null($addCategoryTag) && ! intval($addCategoryTag) ) {
-                // Setting exists and is "Yes".
-                foreach( $cacheTags as $key => $value ) {
-                    if ( preg_match('|^catalog_category|i', $value) ) {
-                        unset( $cacheTags[$key] );
-                    }
-                }
-            }
-
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheKey( $cacheKey );
             /** @noinspection PhpUndefinedMethodInspection */
@@ -387,6 +377,41 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $message = 'Cache miss.  Id:' . $id;
             $message .= $this->getLogSuffix();
             Mage::log( $message, Zend_Log::INFO, self::MISS_LOG_FILE );
+        }
+    }
+
+    /**
+     * Event listener used to log cache misses
+     * @param Varien_Event_Observer $observer
+     */
+    public function cacheSave( $observer ) {
+        $prefix     = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
+        $pregPrefix = preg_quote($prefix,'|');
+        $id         = $observer->getId();
+
+        if ( preg_match('|^'.$pregPrefix.'JV_PRD_|i',$id) ) {
+
+            // Remove category tags if adding disabled
+            $addCategoryTag = Mage::getStoreConfig(self::CONFIG_SECTION.'/'.self::BLOCK_GROUP_PRODUCT.'/add_category_tag');
+
+            if ( ! is_null($addCategoryTag) && ! intval($addCategoryTag) ) {
+                // Setting exists and is "Yes".
+
+                /** @noinspection PhpUndefinedMethodInspection */
+                $transport = $observer->getTransport();
+                /** @noinspection PhpUndefinedMethodInspection */
+                $tags = $transport->getTags();
+
+                foreach( $tags as $key => $value ) {
+                    if ( preg_match('|^'.$pregPrefix.'CATALOG_CATEGORY|i', $value) ) {
+                        unset( $tags[$key] );
+                    }
+                }
+
+                /** @noinspection PhpUndefinedMethodInspection */
+                $transport->setTags($tags);
+            }
+
         }
     }
 

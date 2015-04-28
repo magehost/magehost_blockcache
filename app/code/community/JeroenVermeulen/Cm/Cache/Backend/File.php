@@ -36,7 +36,7 @@ class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
     }
 
     /**
-     * This function will dispatch the event 'jv_cache_miss_jv' when a cache key miss occurs loading a key
+     * This method will dispatch the event 'jv_cache_miss_jv' when a cache key miss occurs loading a key
      * from JeroenVermeulen_BlockCache.
      *
      * {@inheritdoc}
@@ -49,4 +49,22 @@ class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
         return $result;
     }
 
+    /**
+     * This method will dispatch the event 'jv_cache_save_jv' when cache is saved with a key from
+     * JeroenVermeulen_BlockCache.
+     *
+     * {@inheritdoc}
+     */
+    public function save($data, $id, $tags = array(), $specificLifetime = false)
+    {
+        if ( false !== strpos($id,'_JV_') ) {
+            $transportObject = new Varien_Object;
+            /** @noinspection PhpUndefinedMethodInspection */
+            $transportObject->setTags($tags);
+            Mage::dispatchEvent('jv_cache_save_jv', array('id' => $id,'transport' => $transportObject));
+            /** @noinspection PhpUndefinedMethodInspection */
+            $tags = $transportObject->getTags();
+        }
+        return parent::save( $data, $id, $tags, $specificLifetime );
+    }
 }

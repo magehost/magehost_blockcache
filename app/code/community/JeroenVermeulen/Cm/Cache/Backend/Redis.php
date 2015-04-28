@@ -114,11 +114,22 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
      * This method will catch exceptions on Redis failure.
      * This method will return false when constructor failed.
      *
+     * This method will dispatch the event 'jv_cache_save_jv' when cache is saved with a key from
+     * JeroenVermeulen_BlockCache.
+     *
      * {@inheritdoc}
      */
     public function save($data, $id, $tags = array(), $specificLifetime = false)
     {
         $result = false;
+        if ( false !== strpos($id,'_JV_') ) {
+            $transportObject = new Varien_Object;
+            /** @noinspection PhpUndefinedMethodInspection */
+            $transportObject->setTags($tags);
+            Mage::dispatchEvent('jv_cache_save_jv', array('id' => $id,'transport' => $transportObject));
+            /** @noinspection PhpUndefinedMethodInspection */
+            $tags = $transportObject->getTags();
+        }
         if ( $this->works ) {
             try {
                 $result = parent::save( $data, $id, $tags, $specificLifetime );
