@@ -17,6 +17,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     const CONFIG_SECTION  = 'jeroenvermeulen_blockcache';
     const FLUSH_LOG_FILE  = 'cache_flush.log';
     const MISS_LOG_FILE   = 'cache_miss.log';
+    const TAGS_LOG_FILE   = 'cache_tags.log';
     const BLOCK_GROUP_CATEGORY    = 'category_page';
     const BLOCK_GROUP_PRODUCT     = 'product_detail';
     const BLOCK_GROUP_CMS_PAGE    = 'cms_page';
@@ -219,18 +220,30 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $currentProduct );
             $cacheKey .= '_' . md5( $cacheKeyData );
 
-            $tagCurrentCategory = null;
+            $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
+            $cacheTags = array_unique( $cacheTags );
+
+            // Remove category tags if adding disabled
             $addCategoryTag = Mage::getStoreConfig(self::CONFIG_SECTION.'/'.$blockGroup.'/add_category_tag');
-            if ( is_null($addCategoryTag) || intval($addCategoryTag) ) {
-                // Setting does not exist or is "Yes".
-                $tagCurrentCategory = $currentCategory;
+            if ( ! is_null($addCategoryTag) && ! intval($addCategoryTag) ) {
+                // Setting exists and is "Yes".
+                foreach( $cacheTags as $key => $value ) {
+                    if ( preg_match('|^catalog_category|i', $value) ) {
+                        unset( $cacheTags[$key] );
+                    }
+                }
             }
-            $this->addBlockCacheTags( $cacheTags, $tagCurrentCategory, $currentProduct );
 
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheKey( $cacheKey );
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheTags( $cacheTags );
+
+            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/tags') ) {
+                $message = sprintf( 'Block %s Tags %s', $cacheKey, $this->logTags($cacheTags) );
+                $message .= $this->getLogSuffix();
+                Mage::log( $message, Zend_Log::INFO, self::TAGS_LOG_FILE );
+            }
         }
     }
 
@@ -239,6 +252,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      *
      * @param Varien_Event $observer
      */
+
     public function controllerFrontInitBefore( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
         if ( $this->isFlushUrl() ) {
             $cacheTag  = 'URL_' . md5( $this->getFilterUrl() );
@@ -350,7 +364,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             }
         }
 
-        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/flushes/_log') ) {
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/flushes') ) {
             $message = 'Cache flush.  Tags:' . $this->logTags($oldTags,$prefix);
             if ( $changed ) {
                 $message .= '  AfterFilter:' . $this->logTags($tags,$prefix);
@@ -369,7 +383,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function cacheMiss( $observer ) {
         $id = $observer->getId();
-        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/log_miss') ) {
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/misses') ) {
             $message = 'Cache miss.  Id:' . $id;
             $message .= $this->getLogSuffix();
             Mage::log( $message, Zend_Log::INFO, self::MISS_LOG_FILE );
@@ -457,14 +471,18 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @param string $prefix
      * @return string
      */
-    protected function logTags( $tags, $prefix ) {
+    protected function logTags( $tags, $prefix='' ) {
         if ( empty($tags) ) {
             return '-empty-';
         } else {
-            $preg = '/^'.preg_quote($prefix,'/').'/';
-            $cleanTags = array();
-            foreach ( $tags as $tag ) {
-                $cleanTags[] = preg_replace( $preg, '', $tag );
+            if ( $prefix ) {
+                $preg      = '/^' . preg_quote( $prefix, '/' ) . '/';
+                $cleanTags = array();
+                foreach ($tags as $tag) {
+                    $cleanTags[ ] = preg_replace( $preg, '', $tag );
+                }
+            } else {
+                $cleanTags = $tags;
             }
             return implode(',', $cleanTags);
         }

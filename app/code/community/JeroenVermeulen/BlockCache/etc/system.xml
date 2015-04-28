@@ -22,7 +22,7 @@
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
-                <general translate="label" module="jeroenvermeulen_blockcache">
+                <general translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>General</label>
                     <sort_order>100</sort_order>
                     <show_in_default>1</show_in_default>
@@ -58,19 +58,49 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </cache_when_customer_logged_in>
-                        <log_miss translate="label comment">
+                    </fields>
+                </general>
+                <logging translate="label comment" module="jeroenvermeulen_blockcache">
+                    <label>Logging</label>
+                    <comment>You can use this logging for debugging.&lt;br /&gt;Disable after use because logging affects performance.</comment>
+                    <sort_order>150</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <misses translate="label comment">
                             <label>Log Cache Misses</label>
                             <comment>Logfile: var/log/cache_miss.log</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_enabledisable</source_model>
-                            <sort_order>40</sort_order>
+                            <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </log_miss>
+                        </misses>
+                        <flushes translate="label comment">
+                            <label>Log Cache Flushes</label>
+                            <comment>Logfile: var/log/cache_flush.log</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </flushes>
+                        <tags translate="label comment">
+                            <label>Log Cache Tags Set</label>
+                            <comment>Logfile: var/log/cache_tags.log</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tags>
                     </fields>
-                </general>
-                <category_page translate="label" module="jeroenvermeulen_blockcache">
+                </logging>
+                <category_page translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Product List / Category Page</label>
                     <sort_order>200</sort_order>
                     <show_in_default>1</show_in_default>
@@ -113,7 +143,7 @@
                         </enable_messages_fix>
                     </fields>
                 </category_page>
-                <product_detail translate="label" module="jeroenvermeulen_blockcache">
+                <product_detail translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Product Detail Page</label>
                     <sort_order>300</sort_order>
                     <show_in_default>1</show_in_default>
@@ -169,7 +199,7 @@
                         </add_category_tag>
                     </fields>
                 </product_detail>
-                <cms_page translate="label" module="jeroenvermeulen_blockcache">
+                <cms_page translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>CMS Pages</label>
                     <sort_order>400</sort_order>
                     <show_in_default>1</show_in_default>
@@ -199,7 +229,7 @@
                         </lifetime>
                     </fields>
                 </cms_page>
-                <layered_navigation translate="label" module="jeroenvermeulen_blockcache">
+                <layered_navigation translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Layered Navigation Block</label>
                     <sort_order>500</sort_order>
                     <show_in_default>1</show_in_default>
@@ -229,7 +259,7 @@
                         </lifetime>
                     </fields>
                 </layered_navigation>
-                <cms_block translate="label" module="jeroenvermeulen_blockcache">
+                <cms_block translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>CMS Static Blocks &amp; Widgets</label>
                     <sort_order>600</sort_order>
                     <show_in_default>1</show_in_default>
@@ -259,7 +289,7 @@
                         </lifetime>
                     </fields>
                 </cms_block>
-                <custom_1 translate="label" module="jeroenvermeulen_blockcache">
+                <custom_1 translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Custom 1</label>
                     <sort_order>910</sort_order>
                     <show_in_default>1</show_in_default>
@@ -298,7 +328,7 @@
                         </lifetime>
                     </fields>
                 </custom_1>
-                <custom_2 translate="label" module="jeroenvermeulen_blockcache">
+                <custom_2 translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Custom 2</label>
                     <sort_order>920</sort_order>
                     <show_in_default>1</show_in_default>
@@ -337,7 +367,7 @@
                         </lifetime>
                     </fields>
                 </custom_2>
-                <custom_3 translate="label" module="jeroenvermeulen_blockcache">
+                <custom_3 translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Custom 3</label>
                     <sort_order>930</sort_order>
                     <show_in_default>1</show_in_default>
@@ -376,7 +406,7 @@
                         </lifetime>
                     </fields>
                 </custom_3>
-                <custom_4 translate="label" module="jeroenvermeulen_blockcache">
+                <custom_4 translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Custom 4</label>
                     <sort_order>940</sort_order>
                     <show_in_default>1</show_in_default>
@@ -415,7 +445,7 @@
                         </lifetime>
                     </fields>
                 </custom_4>
-                <custom_5 translate="label" module="jeroenvermeulen_blockcache">
+                <custom_5 translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Custom 5</label>
                     <sort_order>950</sort_order>
                     <show_in_default>1</show_in_default>
@@ -462,16 +492,6 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <_log translate="label comment">
-                            <label>Log Cache Flushes</label>
-                            <comment>Logfile: var/log/cache_flush.log</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </_log>
                         <catalog_category translate="label">
                             <label>On Category change</label>
                             <frontend_type>select</frontend_type>
@@ -564,7 +584,7 @@
                         </_without_tags>
                     </fields>
                 </flushes>
-                <cache_warmer translate="label" module="jeroenvermeulen_blockcache">
+                <cache_warmer translate="label comment" module="jeroenvermeulen_blockcache">
                     <label>Cache Warmer</label>
                     <comment>You need to install your own cache warmer software.&lt;br /&gt;These settings allow you to configure what should happen when your cache warmer requests a page.</comment>
                     <sort_order>1100</sort_order>
