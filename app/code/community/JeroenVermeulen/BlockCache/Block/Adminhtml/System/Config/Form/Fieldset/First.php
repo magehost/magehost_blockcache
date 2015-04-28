@@ -53,8 +53,9 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
         if ( !empty($message) ) {
             $result.= sprintf( '<ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul>', $message );
         }
-        $result .= sprintf( '<p>%s</p>',
-                            $this->__( 'These settings have direct affect, no need to flush the cache.' ) );
+        $result .= sprintf( '<p>%s<br />%s</p>',
+                            $this->__( 'Most settings have direct affect.' ),
+                            $this->__( 'Settings which affect cache tags have no effect on already cached blocks.' ) );
         $result .= parent::_getHeaderHtml( $element );
         return $result;
     }

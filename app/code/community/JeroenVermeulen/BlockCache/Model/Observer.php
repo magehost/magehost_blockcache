@@ -219,7 +219,13 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $currentProduct );
             $cacheKey .= '_' . md5( $cacheKeyData );
 
-            $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
+            $tagCurrentCategory = null;
+            $addCategoryTag = Mage::getStoreConfig(self::CONFIG_SECTION.'/'.$blockGroup.'/add_category_tag');
+            if ( is_null($addCategoryTag) || intval($addCategoryTag) ) {
+                // Setting does not exist or is "Yes".
+                $tagCurrentCategory = $currentCategory;
+            }
+            $this->addBlockCacheTags( $cacheTags, $tagCurrentCategory, $currentProduct );
 
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheKey( $cacheKey );

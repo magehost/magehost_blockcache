@@ -100,6 +100,7 @@
                         </lifetime>
                         <enable_messages_fix translate="label comment">
                             <label>Enable Messages Fix</label>
+                            <comment>Disable if you see double notifications on category pages.</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>30</sort_order>
@@ -142,6 +143,7 @@
                         </lifetime>
                         <enable_messages_fix translate="label comment">
                             <label>Enable Messages Fix</label>
+                            <comment>Disable if you see double notifications on product pages.</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>30</sort_order>
@@ -152,6 +154,19 @@
                                 <enable_cache>1</enable_cache>
                             </depends>
                         </enable_messages_fix>
+                        <add_category_tag>
+                            <label>Add Category Cache Tags</label>
+                            <comment>If Yes: Product page will get flushed when category is updated, if flushes "On Category change" are allowed.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <enable_cache>1</enable_cache>
+                            </depends>
+                        </add_category_tag>
                     </fields>
                 </product_detail>
                 <cms_page translate="label" module="jeroenvermeulen_blockcache">
@@ -551,6 +566,7 @@
                 </flushes>
                 <cache_warmer translate="label" module="jeroenvermeulen_blockcache">
                     <label>Cache Warmer</label>
+                    <comment>You need to install your own cache warmer software.&lt;br /&gt;These settings allow you to configure what should happen when your cache warmer requests a page.</comment>
                     <sort_order>1100</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
