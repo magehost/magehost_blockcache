@@ -29,7 +29,7 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
         $message = '';
         $dependClasses = array('Cm_Cache_Backend_File', 'Cm_Cache_Backend_Redis');
         $optionClasses = array();
-        $or = ' ' . $this->__('or') . ' ';
+        $or = "' " . $this->__('or') . " '";
         foreach( $dependClasses as $dependClass ) {
             $ourClass = 'JeroenVermeulen_' . $dependClass;
             if ( mageFindClassFile($dependClass) ) {
@@ -40,11 +40,11 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
         }
         if ( empty($goodBackEnds) ) {
             $message .= 'ERROR:';
-            $message .= '<br />' . $this->__("This extension requires one of these classes to exist: %s", join($or,$dependClasses));
+            $message .= '<br />' . $this->__("This extension requires one of these classes to exist: '%s'", join($or,$dependClasses));
         } elseif ( ! in_array( $currentBackEnd, $goodBackEnds ) ) {
             $message .= 'ERROR:';
-            $message .= '<br />' . $this->__("This extension requires cache backend: %s", join($or,$goodBackEnds) );
-            $message .= '<br />' . $this->__("Current setting: %s", $currentBackEnd);
+            $message .= '<br />' . $this->__("This extension requires cache backend: '%s'", join($or,$goodBackEnds) );
+            $message .= '<br />' . $this->__("Current setting: '%s'", $currentBackEnd);
             $message .= '<br />';
             foreach( $optionClasses as $dependClass => $ourClass ) {
                 $message .= '<br />' . $this->__("If you would install '%s' you could also use '%s'.", $dependClass, $ourClass );

@@ -20,6 +20,9 @@
  */
 class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
 {
+    /** @var string|null */
+    protected $frontendPrefix = null;
+
     /**
      * This function will dispatch the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
      *
@@ -50,21 +53,27 @@ class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
     }
 
     /**
-     * This method will dispatch the event 'jv_cache_save_jv' when cache is saved with a key from
-     * JeroenVermeulen_BlockCache.
+     * This method will dispatch the event 'jv_cache_save_block' when cache is saved for a html block.
      *
      * {@inheritdoc}
      */
     public function save($data, $id, $tags = array(), $specificLifetime = false)
     {
-        if ( false !== strpos($id,'_JV_') ) {
+        if ( in_array( $this->getFrontendPrefix().'BLOCK_HTML', $tags ) ) {
             $transportObject = new Varien_Object;
             /** @noinspection PhpUndefinedMethodInspection */
             $transportObject->setTags($tags);
-            Mage::dispatchEvent('jv_cache_save_jv', array('id' => $id,'transport' => $transportObject));
+            Mage::dispatchEvent('jv_cache_save_block', array('id' => $id,'transport' => $transportObject));
             /** @noinspection PhpUndefinedMethodInspection */
             $tags = $transportObject->getTags();
         }
         return parent::save( $data, $id, $tags, $specificLifetime );
+    }
+
+    protected function getFrontendPrefix() {
+        if ( is_null($this->frontendPrefix) ) {
+            $this->frontendPrefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
+        }
+        return $this->frontendPrefix;
     }
 }

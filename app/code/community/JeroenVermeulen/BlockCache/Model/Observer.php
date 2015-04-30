@@ -50,15 +50,6 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         /** @noinspection PhpUndefinedMethodInspection */
         $cacheKey = $block->getCacheKey();
         if ( $cacheKey ) {
-            /**
-             * We need this extra cache tag to be able to flush per URL later on.
-             * This is the only way because some cache keys or blocks can be session dependent.
-             */
-            $tags = $block->getCacheTags();
-            $tags[] = 'URL_' . md5($this->getFilterUrl());
-            /** @noinspection PhpUndefinedMethodInspection */
-            $block->setCacheTags( $tags );
-
             if ( $this->isFlushUrl() ) {
                 Mage::app()->removeCache( $cacheKey );
             }
@@ -381,13 +372,26 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Event listener used to log cache misses
+     * Event listener used to add or remove cache tags
+     * Listens to event "jv_cache_save_block"
+     *
      * @param Varien_Event_Observer $observer
      */
     public function cacheSave( $observer ) {
         $prefix     = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         $pregPrefix = preg_quote($prefix,'|');
         $id         = $observer->getId();
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $transport = $observer->getTransport();
+        /** @noinspection PhpUndefinedMethodInspection */
+        $tags = $transport->getTags();
+
+        /**
+         * We need this extra cache tag to be able to flush per URL later on.
+         * This is the only way because some cache keys or blocks can be session dependent.
+         */
+        $tags[] = $prefix.'URL_' . md5($this->getFilterUrl());
 
         if ( preg_match('|^'.$pregPrefix.'JV_PRD_|i',$id) ) {
 
@@ -397,22 +401,16 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             if ( ! is_null($addCategoryTag) && ! intval($addCategoryTag) ) {
                 // Setting exists and is "Yes".
 
-                /** @noinspection PhpUndefinedMethodInspection */
-                $transport = $observer->getTransport();
-                /** @noinspection PhpUndefinedMethodInspection */
-                $tags = $transport->getTags();
-
                 foreach( $tags as $key => $value ) {
                     if ( preg_match('|^'.$pregPrefix.'CATALOG_CATEGORY|i', $value) ) {
                         unset( $tags[$key] );
                     }
                 }
-
-                /** @noinspection PhpUndefinedMethodInspection */
-                $transport->setTags($tags);
             }
-
         }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $transport->setTags($tags);
     }
 
     ////////////////////////////////////////////////////////////////////////////

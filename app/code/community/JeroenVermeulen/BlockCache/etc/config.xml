@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.12.2</version>
+            <version>1.12.3</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -62,7 +62,7 @@
                     </jeroenvermeulen_blockcache>
                 </observers>
             </jv_cache_miss_jv>
-            <jv_cache_save_jv>
+            <jv_cache_save_block>
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
@@ -70,7 +70,7 @@
                         <method>cacheSave</method>
                     </jeroenvermeulen_blockcache>
                 </observers>
-            </jv_cache_save_jv>
+            </jv_cache_save_block>
         </events>
     </global>
     <frontend>

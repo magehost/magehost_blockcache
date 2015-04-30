@@ -25,6 +25,8 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
     const ADMIN_READ_TIMEOUT = 7200;
     /** @var bool - Only true when constructor was successful. */
     protected $works = false;
+    /** @var string|null */
+    protected $frontendPrefix = null;
 
     /**
      * This constructor is executed in a very early stage, during @see Mage_Core_Model_App->initCache()
@@ -114,19 +116,18 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
      * This method will catch exceptions on Redis failure.
      * This method will return false when constructor failed.
      *
-     * This method will dispatch the event 'jv_cache_save_jv' when cache is saved with a key from
-     * JeroenVermeulen_BlockCache.
+     * This method will dispatch the event 'jv_cache_save_block' when cache is saved for a html block.
      *
      * {@inheritdoc}
      */
     public function save($data, $id, $tags = array(), $specificLifetime = false)
     {
         $result = false;
-        if ( false !== strpos($id,'_JV_') ) {
+        if ( in_array( $this->getFrontendPrefix().'BLOCK_HTML', $tags ) ) {
             $transportObject = new Varien_Object;
             /** @noinspection PhpUndefinedMethodInspection */
             $transportObject->setTags($tags);
-            Mage::dispatchEvent('jv_cache_save_jv', array('id' => $id,'transport' => $transportObject));
+            Mage::dispatchEvent('jv_cache_save_block', array('id' => $id,'transport' => $transportObject));
             /** @noinspection PhpUndefinedMethodInspection */
             $tags = $transportObject->getTags();
         }
@@ -317,5 +318,12 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
                             $doing,
                             (string)$e );
         Mage::log( $message, Zend_Log::ERR, 'exception.log' );
+    }
+
+    protected function getFrontendPrefix() {
+        if ( is_null($this->frontendPrefix) ) {
+            $this->frontendPrefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
+        }
+        return $this->frontendPrefix;
     }
 }
