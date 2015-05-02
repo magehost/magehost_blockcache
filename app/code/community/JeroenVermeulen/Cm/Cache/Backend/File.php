@@ -24,15 +24,20 @@ class JeroenVermeulen_Cm_Cache_Backend_File extends Cm_Cache_Backend_File
     protected $frontendPrefix = null;
 
     /**
-     * This function will dispatch the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
+     * This method will dispatch the event 'jv_clean_backend_cache'.
+     * Event listeners can change the mode or tags.
      *
      * {@inheritdoc}
      */
     public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array()) {
         $transportObject = new Varien_Object;
         /** @noinspection PhpUndefinedMethodInspection */
-        $transportObject->setTags($tags);
-        Mage::dispatchEvent('jv_clean_backend_cache', array('transport' => $transportObject));
+        $transportObject->setMode( $mode );
+        /** @noinspection PhpUndefinedMethodInspection */
+        $transportObject->setTags( $tags );
+        Mage::dispatchEvent( 'jv_clean_backend_cache', array( 'transport' => $transportObject ) );
+        /** @noinspection PhpUndefinedMethodInspection */
+        $mode = $transportObject->getMode();
         /** @noinspection PhpUndefinedMethodInspection */
         $tags = $transportObject->getTags();
         parent::clean($mode, $tags);
