@@ -35,7 +35,7 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
      * {@inheritdoc}
      */
     public function __construct( $options ) {
-        if ( JeroenVermeulen_BlockCache_Helper_Data::isAdmin() ) {
+        if ( $this->isAdmin() ) {
             if ( empty($options['read_timeout']) || $options['read_timeout'] < self::ADMIN_READ_TIMEOUT ) {
                 $options['read_timeout'] = self::ADMIN_READ_TIMEOUT;
             }
@@ -330,5 +330,40 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
             $this->frontendPrefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         }
         return $this->frontendPrefix;
+    }
+
+    /**
+     * Function to determine if we are currently in admin or cli.
+     * This function must work in a very early stage so we can't use Mage::app()
+     * @return bool
+     */
+    public static function isAdmin() {
+        static $result = null;
+        if ( is_null($result) ) {
+            $result = false;
+            $baseScript = basename($_SERVER['SCRIPT_FILENAME']);
+            if ( 0 === strpos($baseScript,'n98') || 0 === strpos($baseScript,'cron') ) {
+                // CLI or Cron
+                $result = true;
+            } else {
+                $adminPath = null;
+                $config = Mage::getConfig();
+                if ( !empty($config) ) {
+                    $useCustomAdminPath = (bool)(string)$config->getNode(Mage_Adminhtml_Helper_Data::XML_PATH_USE_CUSTOM_ADMIN_PATH);
+                    if ($useCustomAdminPath) {
+                        $adminPath = (string)$config->getNode(Mage_Adminhtml_Helper_Data::XML_PATH_CUSTOM_ADMIN_PATH);
+                    }
+                    if ( empty($adminPath) ) {
+                        $adminPath = (string)$config->getNode(Mage_Adminhtml_Helper_Data::XML_PATH_ADMINHTML_ROUTER_FRONTNAME);
+                    }
+                    $request = new Zend_Controller_Request_Http;
+                    $pathParts = explode( '/', trim($request->getPathInfo(),'/') );
+                    if ( isset($pathParts[0]) && $pathParts[0] == $adminPath ) {
+                        $result = true;
+                    }
+                }
+            }
+        }
+        return $result;
     }
 }
