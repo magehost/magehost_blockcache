@@ -174,7 +174,8 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
     }
 
     /**
-     * This method will dispatch the event 'jv_clean_backend_cache'. Event listeners can change the tags array.
+     * This method will dispatch the event 'jv_clean_backend_cache'.
+     * Event listeners can change the mode or tags.
      *
      * {@inheritdoc}
      */
@@ -182,8 +183,12 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
     {
         $transportObject = new Varien_Object;
         /** @noinspection PhpUndefinedMethodInspection */
+        $transportObject->setMode( $mode );
+        /** @noinspection PhpUndefinedMethodInspection */
         $transportObject->setTags( $tags );
         Mage::dispatchEvent( 'jv_clean_backend_cache', array( 'transport' => $transportObject ) );
+        /** @noinspection PhpUndefinedMethodInspection */
+        $mode = $transportObject->getMode();
         /** @noinspection PhpUndefinedMethodInspection */
         $tags = $transportObject->getTags();
         parent::clean($mode, $tags);

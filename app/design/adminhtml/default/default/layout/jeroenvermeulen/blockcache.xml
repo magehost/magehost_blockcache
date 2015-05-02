@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--suppress XmlUnboundNsPrefix -->
 <layout>
     <adminhtml_jv_blockcache_flush>
         <reference name="content">

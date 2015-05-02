@@ -1,12 +1,13 @@
 <?php
-/** @var JeroenVermeulen_BlockCache_Block_Flush_Form $this */
+/** @var JeroenVermeulen_BlockCache_Block_Adminhtml_Flush_Form $this */
 $sUrl = Mage::getSingleton('core/session')->getData('JeroenVermeulen_BlockCache_FlushURL');
 $sUrl = ( empty( $sUrl ) ) ? '' : $sUrl;
 ?>
 <div class="content-header">
     <table cellspacing="0" class="grid-header">
         <tr>
-            <td><h3><?php echo $this->__('Flush URL'); ?></h3></td>
+            <td><h3><?php /** @noinspection PhpUndefinedMethodInspection */
+                    echo $this->__('Flush URL'); ?></h3></td>
             <td class="a-right">
                 <button onclick="editForm.submit()" class="scalable save" type="button"><span>Flush URL</span></button>
             </td>
@@ -19,13 +20,14 @@ $sUrl = ( empty( $sUrl ) ) ? '' : $sUrl;
         <fieldset id="my-fieldset">
             <table cellspacing="0" class="form-list" style="width: 100%">
                 <tr>
-                    <td class="label"><?php echo $this->__('URL to Flush'); ?> <span class="required">*</span></td>
-                    <td class="input-ele" style="vertical-align: middle;"><input class="input-text required-entry" name="flush_form[url]" style="width: 99%" value="<?php echo $sUrl; ?>" /></td>
+                    <td class="label"><label for="flush_form_url"><?php echo $this->__('URL to Flush'); ?> <span class="required">*</span></label></td>
+                    <td class="input-ele" style="vertical-align: middle;"><input class="input-text required-entry" name="flush_form[url]" id="flush_form_url" style="width: 99%" value="<?php echo $sUrl; ?>" /></td>
                 </tr>
             </table>
         </fieldset>
     </form>
 </div>
 <script type="text/javascript">
+    //noinspection JSPotentiallyInvalidConstructorUsage
     var editForm = new varienForm('edit_form');
 </script>

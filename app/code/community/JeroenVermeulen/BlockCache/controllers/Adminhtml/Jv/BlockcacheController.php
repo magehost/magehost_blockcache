@@ -46,6 +46,7 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
             $httpClient->setConfig( array('httpversion' => Zend_Http_Client::HTTP_0) );
             $response = $httpClient->request();
 
+            /** @noinspection HtmlUnknownTarget */
             $sLink = sprintf( '<a href="%s" target="_blank">%s</a>', $url, $url );
 
             if ( $response->isSuccessful() ) {
@@ -53,7 +54,7 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
                 Mage::log( $msg, Zend_Log::INFO );
                 $session->addSuccess( $msg );
             } else {
-                $msg = $this->__( 'Error flusing URL %s.', $sLink );
+                $msg = $this->__( 'Error flushing URL %s.', $sLink );
                 Mage::log( $msg, Zend_Log::INFO );
                 $session->addError( $msg );
             }
