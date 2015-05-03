@@ -191,7 +191,7 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
         $mode = $transportObject->getMode();
         /** @noinspection PhpUndefinedMethodInspection */
         $tags = $transportObject->getTags();
-        parent::clean($mode, $tags);
+        return parent::clean($mode, $tags);
     }
 
     /**
