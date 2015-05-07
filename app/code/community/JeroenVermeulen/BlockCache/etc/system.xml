@@ -58,6 +58,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </cache_when_customer_logged_in>
+                        <remove_url_param translate="label comment">
+                            <label>Remove URL parameters</label>
+                            <comment>One parameter per line. Will be removed from Magento request. This way the parameters don't end up in URLs inside cached blocks.</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </remove_url_param>
                     </fields>
                 </general>
                 <logging translate="label comment" module="jeroenvermeulen_blockcache">

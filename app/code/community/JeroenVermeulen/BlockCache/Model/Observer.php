@@ -14,10 +14,10 @@
 
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 {
-    const CONFIG_SECTION  = 'jeroenvermeulen_blockcache';
-    const FLUSH_LOG_FILE  = 'cache_flush.log';
-    const MISS_LOG_FILE   = 'cache_miss.log';
-    const TAGS_LOG_FILE   = 'cache_tags.log';
+    const CONFIG_SECTION          = 'jeroenvermeulen_blockcache';
+    const FLUSH_LOG_FILE          = 'cache_flush.log';
+    const MISS_LOG_FILE           = 'cache_miss.log';
+    const TAGS_LOG_FILE           = 'cache_tags.log';
     const BLOCK_GROUP_CATEGORY    = 'category_page';
     const BLOCK_GROUP_PRODUCT     = 'product_detail';
     const BLOCK_GROUP_CMS_PAGE    = 'cms_page';
@@ -229,12 +229,25 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Check if we should flush by URL tag.
+     * - Remove params for the Magento request we don't want to be cached inside blocks.
+     * - Check if we should flush by URL tag.
      *
      * @param Varien_Event $observer
      */
 
     public function controllerFrontInitBefore( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
+        // Save currentUrl in our class, just to be sure to have the original
+        $this->getCurrentUrl();
+        // We remove the params from the Magento request params, so they won't be used by Magento's getUrl(..)
+        $removeParam = $this->getRemoveUrlParam();
+        $request = Mage::app()->getRequest();
+        $params = $request->getParams();
+        foreach ( array_keys($params) as $key ) {
+            if ( in_array($key,$removeParam) ) {
+                $request->setParam( $key, null );
+            }
+        }
+
         if ( $this->isFlushUrl() ) {
             $cacheTag  = 'URL_' . md5( $this->getFilterUrl() );
             Mage::app()->cleanCache( array( $cacheTag ) );
@@ -455,11 +468,13 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     protected function getFilterUrl() {
         if ( empty($this->filterUrl) ) {
             $filterUrl = $this->getCurrentUrl();
-            $filterUrl = preg_replace('/(\?|&)(utm_source|utm_medium|utm_campaign|gclid|cx|ie|cof|siteurl)=[^&]+/ms','$1',$filterUrl);
-            $filterUrl = preg_replace('/(\?|&)jvflush\b/','',$filterUrl);
+            $removeParam = $this->getRemoveUrlParam();
+            foreach ( $removeParam as $param ) {
+                $filterUrl = preg_replace('/(\?|&)'.preg_quote($param,'/').'\b(=[^&]+)?/s','$1',$filterUrl);
+            }
             $filterUrl = preg_replace('/\?&+/','?',$filterUrl);
             $filterUrl = preg_replace('/\&{2,}/','&',$filterUrl);
-            $filterUrl = preg_replace('/\?$/','',$filterUrl);
+            $filterUrl = preg_replace('/[\?&]+$/','',$filterUrl);
             $this->filterUrl = $filterUrl;
         }
         return $this->filterUrl;
@@ -550,6 +565,18 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
     protected function isFlushUrl() {
         return ( preg_match( '/\?.*jvflush/', $this->getCurrentUrl() ) || !empty( $_COOKIE['jvflush'] ) );
+    }
+
+    protected function getRemoveUrlParam() {
+        $configParam = explode( "\n", trim( Mage::getStoreConfig(self::CONFIG_SECTION.'/general/remove_url_param') ) );
+        $result = array('jvflush');
+        foreach( $configParam as $param ) {
+            $param = trim($param);
+            if ( !empty($param) ) {
+                $result[] = $param;
+            }
+        }
+        return $result;
     }
 
 }

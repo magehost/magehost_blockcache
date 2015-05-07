@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.12.7</version>
+            <version>1.13.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -156,6 +156,14 @@
                 <enable_formkey_fix>1</enable_formkey_fix>
                 <cache_when_url_param>0</cache_when_url_param>
                 <cache_when_customer_logged_in>1</cache_when_customer_logged_in>
+                <remove_url_param>utm_source
+utm_medium
+utm_campaign
+gclid
+cx
+ie
+cof
+siteurl</remove_url_param>
             </general>
             <logging>
                 <misses>0</misses>
