@@ -34,7 +34,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     /** @var string */
     var $currentUrl = null;
     /** @var string */
-    var $filterUrl = null;
+    var $filterUrl = array();
 
     /**
      * Apply cache settings to block
@@ -236,24 +236,38 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
 
     public function controllerFrontInitBefore( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
-        $currentUrl = $this->getCurrentUrl();
-        $filterUrl  = $this->getFilterUrl();
+        if ( ! $this->isAdmin() ) {
+            $currentUrl = $this->getCurrentUrl();
+            $filterUrl  = $this->getFilterUrl();
 
-        // If URL contains jvflush param, clean all blocks with the URL tag from the cache
-        if ( $this->isFlushUrl($currentUrl) ) {
-            $cacheTag  = 'URL_' . md5( $filterUrl );
-            Mage::app()->cleanCache( array( $cacheTag ) );
-        }
+            // If URL contains jvflush param, clean all blocks with the URL tag from the cache
+            if ( $this->isFlushUrl($currentUrl) ) {
+                $cacheTag  = 'URL_' . md5( $filterUrl );
+                Mage::app()->cleanCache( array( $cacheTag ) );
+            }
 
-        // We remove the params from the Magento request params, so they won't be used by Magento's getUrl(..)
-        $removeParam = $this->getRemoveUrlParam();
-        $request = Mage::app()->getRequest();
-        $request->setRequestUri( $filterUrl );
-        foreach ( $removeParam as $key ) {
-            $request->setParam( $key, null );
-            unset( $_GET[$key] );
-            unset( $_POST[$key] );
-            unset( $_REQUEST[$key] );
+            // We remove the params from the Magento request params, so they won't be used by Magento's getUrl(..)
+            foreach (array( 'REQUEST_URI', 'REDIRECT_URL' ) as $field) {
+                if (!empty( $_SERVER[ $field ] )) {
+                    $_SERVER[ $field ] = $this->getFilterUrl( $_SERVER[ $field ] );
+                }
+            }
+            foreach (array( 'QUERY_STRING', 'REDIRECT_QUERY_STRING' ) as $field) {
+                if (!empty( $_SERVER[ $field ] )) {
+                    $filterQueryString = $this->getFilterUrl( '?' . $_SERVER[ $field ] );
+                    $_SERVER[ $field ] = ltrim( $filterQueryString, '?' );
+                }
+            }
+            $removeParam = $this->getRemoveUrlParam();
+            $request     = Mage::app()->getRequest();
+            foreach ($removeParam as $key) {
+                $request->setParam( $key, null );
+                unset( $_GET[ $key ] );
+                unset( $_POST[ $key ] );
+                unset( $_REQUEST[ $key ] );
+            }
+            $request->setRequestUri( $this->getFilterUrl( $request->getRequestUri() ) );
+            $request->setPathInfo();
         }
     }
 
@@ -466,11 +480,12 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param string|null $url - URL to clean
      * @return string
      */
-    protected function getFilterUrl() {
-        if ( empty($this->filterUrl) ) {
-            $filterUrl = $this->getCurrentUrl();
+    protected function getFilterUrl( $url=null ) {
+        if ( empty($this->filterUrl[$url]) ) {
+            $filterUrl = is_null($url) ? $this->getCurrentUrl() : $url;
             $removeParam = $this->getRemoveUrlParam();
             foreach ( $removeParam as $param ) {
                 $filterUrl = preg_replace('/(\?|&)'.preg_quote($param,'/').'\b(=[^&]+)?/s','$1',$filterUrl);
@@ -478,9 +493,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $filterUrl = preg_replace('/\?&+/','?',$filterUrl);
             $filterUrl = preg_replace('/\&{2,}/','&',$filterUrl);
             $filterUrl = preg_replace('/[\?&]+$/','',$filterUrl);
-            $this->filterUrl = $filterUrl;
+            $this->filterUrl[$url] = $filterUrl;
         }
-        return $this->filterUrl;
+        return $this->filterUrl[$url];
     }
 
     /**
@@ -586,4 +601,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         return $result;
     }
 
+    protected function isAdmin( $url=null ) {
+        if ( is_null($url) ) {
+            $url = Mage::app()->getRequest()->getPathInfo();
+        }
+        $adminFrontName = strval( Mage::getConfig()->getNode( 'admin/routers/adminhtml/args/frontName' ) );
+        return ( false !== strpos( $url, '/' . $adminFrontName . '/' ) );
+    }
 }
