@@ -236,21 +236,24 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
 
     public function controllerFrontInitBefore( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
-        // Save currentUrl in our class, just to be sure to have the original
-        $this->getCurrentUrl();
+        $currentUrl = $this->getCurrentUrl();
+        $filterUrl  = $this->getFilterUrl();
+
+        // If URL contains jvflush param, clean all blocks with the URL tag from the cache
+        if ( $this->isFlushUrl($currentUrl) ) {
+            $cacheTag  = 'URL_' . md5( $filterUrl );
+            Mage::app()->cleanCache( array( $cacheTag ) );
+        }
+
         // We remove the params from the Magento request params, so they won't be used by Magento's getUrl(..)
         $removeParam = $this->getRemoveUrlParam();
         $request = Mage::app()->getRequest();
-        $params = $request->getParams();
-        foreach ( array_keys($params) as $key ) {
-            if ( in_array($key,$removeParam) ) {
-                $request->setParam( $key, null );
-            }
-        }
-
-        if ( $this->isFlushUrl() ) {
-            $cacheTag  = 'URL_' . md5( $this->getFilterUrl() );
-            Mage::app()->cleanCache( array( $cacheTag ) );
+        $request->setRequestUri( $filterUrl );
+        foreach ( $removeParam as $key ) {
+            $request->setParam( $key, null );
+            unset( $_GET[$key] );
+            unset( $_POST[$key] );
+            unset( $_REQUEST[$key] );
         }
     }
 
@@ -561,10 +564,14 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @param  string|null $url
      * @return bool
      */
-    protected function isFlushUrl() {
-        return ( preg_match( '/\?.*jvflush/', $this->getCurrentUrl() ) || !empty( $_COOKIE['jvflush'] ) );
+    protected function isFlushUrl( $url = null ) {
+        if ( is_null($url) ) {
+            $url = $this->getCurrentUrl();
+        }
+        return ( preg_match( '/\?.*jvflush/', $url ) || !empty( $_COOKIE['jvflush'] ) );
     }
 
     protected function getRemoveUrlParam() {
