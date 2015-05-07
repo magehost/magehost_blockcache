@@ -40,20 +40,11 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_formkey_fix>
-                        <cache_when_url_param translate="label comment">
-                            <label>When URL parameters set</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheblocks</source_model>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </cache_when_url_param>
                         <cache_when_customer_logged_in translate="label comment">
                             <label>When Customer logged in</label>
                             <frontend_type>select</frontend_type>
                             <source_model>jeroenvermeulen_blockcache/system_config_source_cacheblocks</source_model>
-                            <sort_order>30</sort_order>
+                            <sort_order>20</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -62,11 +53,21 @@
                             <label>Remove URL parameters</label>
                             <comment>One parameter per line. Will be removed from Magento request. This way the parameters don't end up in URLs inside cached blocks.</comment>
                             <frontend_type>textarea</frontend_type>
-                            <sort_order>40</sort_order>
+                            <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </remove_url_param>
+                        <cache_when_url_param translate="label comment">
+                            <label>When URL parameters set</label>
+                            <comment>If parameters left after 'Remove URL parameters'.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>jeroenvermeulen_blockcache/system_config_source_cacheblocks</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </cache_when_url_param>
                     </fields>
                 </general>
                 <logging translate="label comment" module="jeroenvermeulen_blockcache">
