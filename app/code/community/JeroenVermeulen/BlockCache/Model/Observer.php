@@ -508,15 +508,19 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $cacheTags[] = Mage_Core_Model_Translate::CACHE_TAG;
         if ( $category instanceof Mage_Catalog_Model_Category ) {
             $addTags = $category->getCacheIdTags();
-            foreach( $addTags as $tag) { // a little faster then array_merge
-                $cacheTags[] = $tag;
+            if ( is_array($addTags) ) {
+                foreach( $addTags as $tag) { // a little faster then array_merge
+                    $cacheTags[] = $tag;
+                }
             }
         }
         if ( $product instanceof Mage_Catalog_Model_Product ) {
             $cacheTags[] = Mage_Catalog_Model_Product::CACHE_TAG.'_'.$product->getId();
             $addTags = $product->getCacheIdTags();
-            foreach( $addTags as $tag) { // a little faster then array_merge
-                $cacheTags[] = $tag;
+            if ( is_array($addTags) ) {
+                foreach ($addTags as $tag) { // a little faster then array_merge
+                    $cacheTags[ ] = $tag;
+                }
             }
         }
     }
