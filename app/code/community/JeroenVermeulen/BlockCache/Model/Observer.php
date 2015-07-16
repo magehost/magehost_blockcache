@@ -95,7 +95,8 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $blockGroup = self::BLOCK_GROUP_PRODUCT;
         } /** @noinspection PhpUndefinedClassInspection */
         elseif ($block instanceof Mage_Catalog_Block_Layer_View ||
-                $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View) {
+                $block instanceof Emico_Tweakwise_Block_Catalog_Layer_View ||
+                $block instanceof Mana_Filters_Block_View) {
             $blockGroup = self::BLOCK_GROUP_LAYERED_NAV;
         } elseif ($block instanceof Mage_Cms_Block_Page) {
             $blockGroup = self::BLOCK_GROUP_CMS_PAGE;
