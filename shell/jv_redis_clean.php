@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 $mageRoot = dirname(dirname(__FILE__));
 /** @noinspection PhpIncludeInspection */
