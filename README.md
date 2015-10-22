@@ -1,9 +1,9 @@
 ## JeroenVermeulen_BlockCache
 Performance improvement by caching big blocks in Magento.
 
-**We are sorry but we cannot offer customer support for this extension, and it is provided "as-is" for free. We use it at a number of big shops and it works well.**
+**We are sorry but we cannot offer customer support for this extension, and it is provided "as-is" for free. We use it at a number of shops and it works well.**
 
-This extension is meant for heavy traffic shops which are not running on Varnish.
+This extension is meant to speed up shops which are not running on Varnish.
 
 ### Config Settings:
 
