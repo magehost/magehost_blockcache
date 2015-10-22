@@ -361,7 +361,8 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 if ( ! Mage::getStoreConfigFlag( self::CONFIG_SECTION . '/flushes/' . $filter ) ) {
                     $newTags = array();
                     foreach ($tags as $tag) {
-                        if (0 !== stripos( $tag, $prefix . $filter )) {
+                        if ( 0 !== stripos( $tag, $prefix . $filter ) && 
+                             0 !== stripos( $tag, $filter ) ) {
                             $newTags[ ] = $tag;
                         } else {
                             $changed = true;
