@@ -127,7 +127,7 @@
                 <children>
                     <!-- URL:  http://[MAGROOT]/admin/jv_blockcache/flush/key/xxxxxxxxxxx/ -->
                     <jv_blockcache_flush>
-                        <title>JV: Flush URL from Cache</title>
+                        <title>JV: Flush URL from BlockCache</title>
                         <action>adminhtml/jv_blockcache/flush</action>
                         <sort_order>90</sort_order>
                     </jv_blockcache_flush>
