@@ -331,7 +331,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $changed = false;
 
         if ( $request = Mage::app()->getRequest() ) {
-            if ('adminhtml' == $request->getRouteName() &&'cache' == $request->getControllerName()) {
+            if ('adminhtml' == $request->getRouteName() && 'cache' == $request->getControllerName()) {
                 // We will always allow System > Cache Management
                 $doFilter = false;
             }
@@ -379,6 +379,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             $message = 'Cache flush.  Tags:' . $this->logTags($oldTags,$prefix);
             if ( $changed ) {
                 $message .= '  AfterFilter:' . $this->logTags($tags,$prefix);
+            }
+            if ( !$doFilter ) {
+                $message .= '  Filter is disabled for this request';
             }
             $message .= $this->getLogSuffix();
             Mage::log( $message, Zend_Log::INFO, self::FLUSH_LOG_FILE );
