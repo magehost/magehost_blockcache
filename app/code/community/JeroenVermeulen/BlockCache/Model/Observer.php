@@ -474,8 +474,19 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @return string
      */
     protected function getCurrentUrl() {
-        if ( empty( $this->currentUrl ) ){
-            $this->currentUrl = Mage::helper('core/url')->getCurrentUrl();
+        if ( empty( $this->currentUrl ) ) {
+            if ( version_compare( Mage::getVersion(), '1.4.2', '>=' ) ) {
+                $this->currentUrl = Mage::helper('core/url')->getCurrentUrl();
+            } else {
+                // The getCurrentUrl() of Magento older then 1.4.2 is a bit too complicated to work during early events.
+                // Warning: this fix does not guarantee the whole extension will work in Magento pre 1.6.2, use at own risk.
+                $request = Mage::app()->getRequest();
+                $port = $request->getServer('SERVER_PORT');
+                if ($port) {
+                    $port = ($port==80 || $port==443) ? '' : ':' . $port;
+                }
+                $this->currentUrl = $request->getScheme() . '://' . $request->getHttpHost() . $port . $request->getServer('REQUEST_URI');
+            }
         }
         return $this->currentUrl;
     }
