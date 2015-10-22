@@ -349,12 +349,13 @@ class JeroenVermeulen_Cm_Cache_Backend_Redis extends Cm_Cache_Backend_Redis
                 $adminPath = null;
                 $config = Mage::getConfig();
                 if ( !empty($config) ) {
-                    $useCustomAdminPath = (bool)(string)$config->getNode(Mage_Adminhtml_Helper_Data::XML_PATH_USE_CUSTOM_ADMIN_PATH);
+                    // Not using Mage_Adminhtml_Helper_Data::XML_PATH_... here because it does not exist in older Magento versions
+                    $useCustomAdminPath = (bool)(string)$config->getNode('default/admin/url/use_custom_path');
                     if ($useCustomAdminPath) {
-                        $adminPath = (string)$config->getNode(Mage_Adminhtml_Helper_Data::XML_PATH_CUSTOM_ADMIN_PATH);
+                        $adminPath = (string)$config->getNode('default/admin/url/custom_path');
                     }
                     if ( empty($adminPath) ) {
-                        $adminPath = (string)$config->getNode(Mage_Adminhtml_Helper_Data::XML_PATH_ADMINHTML_ROUTER_FRONTNAME);
+                        $adminPath = (string)$config->getNode('admin/routers/adminhtml/args/frontName');
                     }
                     $request = new Zend_Controller_Request_Http;
                     $pathParts = explode( '/', trim($request->getPathInfo(),'/') );
