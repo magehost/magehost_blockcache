@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.13.7</version>
+            <version>1.13.8</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>

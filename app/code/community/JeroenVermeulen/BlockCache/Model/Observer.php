@@ -325,6 +325,9 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $transport = $observer->getTransport();
         /** @noinspection PhpUndefinedMethodInspection */
         $tags = $transport->getTags();
+        if ( !is_array($tags) ) {
+	    return;
+        }
         $prefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         $oldTags = $tags;
         $doFilter = true;
