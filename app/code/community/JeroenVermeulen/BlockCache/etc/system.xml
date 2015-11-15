@@ -309,7 +309,7 @@
                         <instanceof translate="label comment">
                             <label>Match Block Instance Of</label>
                             <frontend_type>textarea</frontend_type>
-                            <comment>Enter one block type or PHP class per line</comment>
+                            <comment><![CDATA[Enter one block type or PHP class per line. Examples:<br /><pre>page/html_topmenu<br />Mage_Page_Block_Html_Footer</pre>]]></comment>
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.13.8</version>
+            <version>1.14.0</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -39,7 +39,7 @@
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
-                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <class>jeroenvermeulen_blockcache/observer</class>
                         <method>controllerFrontInitBefore</method>
                     </jeroenvermeulen_blockcache>
                 </observers>
@@ -48,7 +48,7 @@
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
-                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <class>jeroenvermeulen_blockcache/observer</class>
                         <method>cleanBackendCache</method>
                     </jeroenvermeulen_blockcache>
                 </observers>
@@ -57,7 +57,7 @@
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
-                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <class>jeroenvermeulen_blockcache/observer</class>
                         <method>cacheMiss</method>
                     </jeroenvermeulen_blockcache>
                 </observers>
@@ -66,11 +66,20 @@
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
-                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <class>jeroenvermeulen_blockcache/observer</class>
                         <method>cacheSave</method>
                     </jeroenvermeulen_blockcache>
                 </observers>
             </jv_cache_save_block>
+            <clean_catalog_images_cache_after>
+                <observers>
+                    <jeroenvermeulen_blockcache>
+                        <type>singleton</type>
+                        <class>jeroenvermeulen_blockcache/observer</class>
+                        <method>cleanCatalogImagesCacheAfter</method>
+                    </jeroenvermeulen_blockcache>
+                </observers>
+            </clean_catalog_images_cache_after>
         </events>
     </global>
     <frontend>
@@ -86,7 +95,7 @@
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
-                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <class>jeroenvermeulen_blockcache/observer</class>
                         <method>coreBlockAbstractToHtmlBefore</method>
                     </jeroenvermeulen_blockcache>
                 </observers>
@@ -95,7 +104,7 @@
                 <observers>
                     <jeroenvermeulen_blockcache>
                         <type>singleton</type>
-                        <class>JeroenVermeulen_BlockCache_Model_Observer</class>
+                        <class>jeroenvermeulen_blockcache/observer</class>
                         <method>controllerFrontSendResponseBefore</method>
                     </jeroenvermeulen_blockcache>
                 </observers>

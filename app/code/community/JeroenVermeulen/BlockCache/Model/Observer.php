@@ -14,20 +14,32 @@
 
 class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 {
-    const CONFIG_SECTION          = 'jeroenvermeulen_blockcache';
-    const FLUSH_LOG_FILE          = 'cache_flush.log';
-    const MISS_LOG_FILE           = 'cache_miss.log';
-    const TAGS_LOG_FILE           = 'cache_tags.log';
+    const CONFIG_SECTION = 'jeroenvermeulen_blockcache';
+    const FLUSH_LOG_FILE = 'cache_flush.log';
+    const MISS_LOG_FILE  = 'cache_miss.log';
+    const TAGS_LOG_FILE  = 'cache_tags.log';
     const BLOCK_GROUP_CATEGORY    = 'category_page';
     const BLOCK_GROUP_PRODUCT     = 'product_detail';
-    const BLOCK_GROUP_CMS_PAGE    = 'cms_page';
     const BLOCK_GROUP_LAYERED_NAV = 'layered_navigation';
+    const BLOCK_GROUP_CMS_PAGE    = 'cms_page';
     const BLOCK_GROUP_CMS_BLOCK   = 'cms_block';
     const BLOCK_GROUP_CUSTOM_1    = 'custom_1';
     const BLOCK_GROUP_CUSTOM_2    = 'custom_2';
     const BLOCK_GROUP_CUSTOM_3    = 'custom_3';
     const BLOCK_GROUP_CUSTOM_4    = 'custom_4';
     const BLOCK_GROUP_CUSTOM_5    = 'custom_5';
+    const CACHEKEY_START             = 'JV_';
+    const CACHEKEY_GROUP_CATEGORY    = 'CAT_';
+    const CACHEKEY_GROUP_PRODUCT     = 'PRD_';
+    const CACHEKEY_GROUP_LAYERED_NAV = 'LNAV_';
+    const CACHEKEY_GROUP_CMS_PAGE    = 'CMSP_';
+    const CACHEKEY_GROUP_CMS_BLOCK   = 'CMSB_';
+    const CACHEKEY_GROUP_CUSTOM_1    = 'CUSTOM_1_';
+    const CACHEKEY_GROUP_CUSTOM_2    = 'CUSTOM_2_';
+    const CACHEKEY_GROUP_CUSTOM_3    = 'CUSTOM_3_';
+    const CACHEKEY_GROUP_CUSTOM_4    = 'CUSTOM_4_';
+    const CACHEKEY_GROUP_CUSTOM_5    = 'CUSTOM_5_';
+    const CACHE_TAG = 'JV_BLOCKCACHE';
 
     /** @var null|string */
     var $logSuffix = null;
@@ -138,14 +150,14 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         if ( $cacheLifeTime ) {
             $currentCategory = null;
             $currentProduct  = null;
-            $cacheKey        = 'JV_';
+            $cacheKey        = self::CACHEKEY_START;
             $cacheKeyData    = '';
             $cacheTags       = array();
 
             switch ($blockGroup) {
 
                 case self::BLOCK_GROUP_CATEGORY:
-                    $cacheKey .= 'CAT_';
+                    $cacheKey .= self::CACHEKEY_GROUP_CATEGORY;
                     $currentCategory = Mage::registry( 'current_category' );
                     // Add sorting & paging to cache key
                     $catalogSession = Mage::getSingleton( 'catalog/session' );
@@ -162,18 +174,18 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                     break;
 
                 case self::BLOCK_GROUP_PRODUCT:
-                    $cacheKey .= 'PRD_';
+                    $cacheKey .= self::CACHEKEY_GROUP_PRODUCT;
                     $currentCategory = Mage::registry( 'current_category' );
                     $currentProduct  = Mage::registry( 'current_product' );
                     break;
 
                 case self::BLOCK_GROUP_LAYERED_NAV:
-                    $cacheKey      .= 'LNAV_';
+                    $cacheKey .= self::CACHEKEY_GROUP_LAYERED_NAV;
                     $currentCategory = Mage::registry( 'current_category' );
                     break;
 
                 case self::BLOCK_GROUP_CMS_PAGE:
-                    $cacheKey .= 'CMSP_';
+                    $cacheKey .= self::CACHEKEY_GROUP_CMS_PAGE;
                     $cmsPage    = Mage::getSingleton( 'cms/page' );
                     if ($cmsPage instanceof Mage_Cms_Model_Page) {
                         $cacheTags[] = Mage_Cms_Model_Page::CACHE_TAG . '_' . $cmsPage->getId();
@@ -183,7 +195,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
 
                 case self::BLOCK_GROUP_CMS_BLOCK:
                     /** @noinspection PhpUndefinedMethodInspection */
-                    $cacheKey .= 'CMSB_';
+                    $cacheKey .= self::CACHEKEY_GROUP_CMS_BLOCK;
                     $cacheKeyData .= '|b' . $block->getBlockId(); // Example block_id: 'after_body_start'
                     $cacheTags[] = Mage_Cms_Model_Block::CACHE_TAG;
                     break;
@@ -195,13 +207,16 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 case self::BLOCK_GROUP_CUSTOM_5:
                     /** @noinspection PhpUndefinedMethodInspection */
                     // We don't know what it exactly is the user configured, so we throw everything in
-                    $cacheKey .= strtoupper($blockGroup).'_';
+                    $cacheKey .= constant( 'self::CACHEKEY_GROUP_'.strtoupper($blockGroup) );
                     $currentCategory = Mage::registry( 'current_category' );
                     $currentProduct  = Mage::registry( 'current_product' );
                     $allData = $block->getData();
                     unset( $allData['cache_lifetime'] );
                     $cacheKeyData .= '|D'.json_encode($allData,0,3); // All block data, 3 levels max
                     break;
+
+                default:
+                    Mage::log( "ERROR: %s->%s: Unknown block group '%s'", __CLASS__, __FUNCTION__, $blockGroup );
             }
             if ($currentCategory instanceof Mage_Catalog_Model_Category) {
                 $cacheKey .= 'C' . $currentCategory->getId();
@@ -209,8 +224,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             if ($currentProduct instanceof Mage_Catalog_Model_Product) {
                 $cacheKey .= 'P' . $currentProduct->getId();
             }
-            $cacheKeyData .= $this->getBlockCacheKeyData( $block, $store, $currentCategory,
-                $currentProduct );
+            $cacheKeyData .= $this->getBlockCacheKeyData( $block, $store, $currentCategory, $currentProduct );
             $cacheKey .= '_' . md5( $cacheKeyData );
 
             $this->addBlockCacheTags( $cacheTags, $currentCategory, $currentProduct );
@@ -235,7 +249,6 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      *
      * @param Varien_Event $observer
      */
-
     public function controllerFrontInitBefore( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
         if ( ! $this->isAdmin() ) {
             $currentUrl = $this->getCurrentUrl();
@@ -326,7 +339,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         /** @noinspection PhpUndefinedMethodInspection */
         $tags = $transport->getTags();
         if ( !is_array($tags) ) {
-	    return;
+            return;
         }
         $prefix = Mage::app()->getCacheInstance()->getFrontend()->getOption('cache_id_prefix');
         $oldTags = $tags;
@@ -450,6 +463,17 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $transport->setTags($tags);
     }
 
+    /**
+     * Event listener used to clean block cache when resized images are cleaned.
+     * This is necessary because the URLs of the resized images are cached inside the blocks.
+     * Listens to event "clean_catalog_images_cache_after"
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function cleanCatalogImagesCacheAfter( /** @noinspection PhpUnusedParameterInspection */ $observer ) {
+        Mage::app()->getCache()->clean( 'matchingAnyTag', array(self::CACHE_TAG) );
+    }
+
     ////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -522,6 +546,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      * @param Mage_Catalog_Model_Product|null $product
      */
     protected function addBlockCacheTags( &$cacheTags, $category=null, $product=null ) {
+        $cacheTags[] = self::CACHE_TAG;
         $cacheTags[] = Mage_Core_Block_Abstract::CACHE_GROUP;
         $cacheTags[] = Mage_Core_Model_Translate::CACHE_TAG;
         if ( $category instanceof Mage_Catalog_Model_Category ) {
