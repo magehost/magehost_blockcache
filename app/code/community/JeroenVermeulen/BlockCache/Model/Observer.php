@@ -488,7 +488,10 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $result = '|' . $this->getFilterUrl(); // covers secure, url param, page nr
         $result .= '|' . get_class( $block );
         $result .= '|' . $block->getTemplate();
-        $result .= '|' . Mage::getSingleton('customer/session')->getCustomerGroupId();
+        $customerSession = Mage::getSingleton('customer/session');
+        if ($customerSession instanceof Mage_Customer_Model_Session) {
+            $result .= '|cg' . $customerSession->getCustomerGroupId();
+        }
         $result .= '|' . $store->getId();
         $result .= '|' . $store->getCurrentCurrencyCode();
         if ( $category instanceof Mage_Catalog_Model_Category ) {
