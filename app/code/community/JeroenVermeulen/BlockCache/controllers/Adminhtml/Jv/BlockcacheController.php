@@ -42,6 +42,7 @@ class JeroenVermeulen_BlockCache_Adminhtml_Jv_BlockcacheController extends Mage_
                 Zend_Log::INFO,
                 'system.log' );
             $httpClient = new Zend_Http_Client($flushUrl);
+            $httpClient->setConfig( array( 'timeout' => 60 ) );
             $httpClient->setCookie( 'jvflush', '1' );
             $httpClient->setConfig( array('httpversion' => Zend_Http_Client::HTTP_0) );
             $response = $httpClient->request();
