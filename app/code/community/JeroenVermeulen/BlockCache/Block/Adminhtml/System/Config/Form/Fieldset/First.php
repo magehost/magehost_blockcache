@@ -31,7 +31,7 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
         $optionClasses = array();
         $or = "' " . $this->__('or') . " '";
         foreach( $dependClasses as $dependClass ) {
-            $ourClass = 'JeroenVermeulen_' . $dependClass;
+            $ourClass = 'MageHost_' . $dependClass;
             if ( mageFindClassFile($dependClass) ) {
                 $goodBackEnds[] = $ourClass;
             } else {
