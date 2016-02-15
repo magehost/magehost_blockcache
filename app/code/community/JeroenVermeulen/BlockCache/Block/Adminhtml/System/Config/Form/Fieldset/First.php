@@ -49,6 +49,25 @@ class JeroenVermeulen_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Fir
             foreach( $optionClasses as $dependClass => $ourClass ) {
                 $message .= '<br />' . $this->__("If you would install '%s' you could also use '%s'.", $dependClass, $ourClass );
             }
+            if ( in_array('MageHost_Cm_Cache_Backend_File',$goodBackEnds) ) {
+                $message .= <<<EOF
+<br />
+Please update your <code style="font-weight: normal;">app/etc/local.xml</code>, for example:<br />
+<code style="font-weight: normal;">
+&lt;config&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;global&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+<strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;cache&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;backend&gt;MageHost_Cm_Cache_Backend_File&lt;/backend&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/cache&gt;<br />
+</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/global&gt;<br />
+&lt;/config&gt;<br />
+</code>
+EOF;
+            }
         }
         if ( !empty($message) ) {
             $result.= sprintf( '<ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul>', $message );
