@@ -5,6 +5,10 @@ Performance improvement by caching big blocks in Magento.
 
 This extension is meant to speed up shops which are not running on Varnish.
 
+### Installation
+
+[Please follow this manual.](https://github.com/jeroenvermeulen/jeroenvermeulen-blockcache/wiki/Installation-Manual)
+
 ### Config Settings:
 
 `System > Configuration > ADVANCED > JeroenVermeulen BlockCache`
