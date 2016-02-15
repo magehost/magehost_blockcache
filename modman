@@ -1,30 +1,10 @@
 ## JeroenVermeulen_BlockCache Extension - Performance Improvement by better block caching in Magento CE
 
-# ---- Module enable XML
-# Magento Global Config        - File          - modules/JeroenVermeulen_BlockCache.xml
 app/etc/modules/JeroenVermeulen_BlockCache.xml                              app/etc/modules/JeroenVermeulen_BlockCache.xml
-
-# ---- Extension code dir
-# Magento Community Module     - Recursive Dir - JeroenVermeulen/BlockCache
 app/code/community/JeroenVermeulen/BlockCache/                              app/code/community/JeroenVermeulen/BlockCache/
-
-# ---- Frontend layout
-# Magento User Interface       - File          - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
 app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml      app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml
-
-# ---- Backend layout
-# Magento User Interface       - File          - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
 app/design/adminhtml/default/default/layout/jeroenvermeulen/blockcache.xml  app/design/adminhtml/default/default/layout/jeroenvermeulen/blockcache.xml
-
-# ---- Backend Templates
-# Magento User Interface       - Recursive Dir - frontend/base/default/layout/jeroenvermeulen/blockcache.xml
 app/design/adminhtml/default/default/template/jeroenvermeulen/blockcache/   app/design/adminhtml/default/default/template/jeroenvermeulen/blockcache/
-
-# ---- Cm_Cache_Backend_File
-# Magento Community Module     - Recursive Dir - MageHost/Cm
-app/code/community/MageHost/Cm/                app/code/community/MageHost/Cm/
-
-
-# ---- Shell Clean Tool
-# Magento other                - File          - shell/jv_redis_clean.php
-shell/jv_redis_clean.php                                                    shell/jv_redis_clean.php
+app/code/community/MageHost/Cm/                                             app/code/community/MageHost/Cm/
+app/code/community/Cm/Cache/Backend/File.php                                app/code/community/Cm/Cache/Backend/File.php
+shell/jv_redis_cache_clean.php                                              shell/jv_redis_cache_clean.php

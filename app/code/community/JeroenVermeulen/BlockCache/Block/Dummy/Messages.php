@@ -9,7 +9,7 @@
  *
  * @category     JeroenVermeulen
  * @package      JeroenVermeulen_BlockCache
- * @copyright    Copyright (c) 2015 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+ * @copyright    Copyright (c) 2016 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
  */
 
 class JeroenVermeulen_BlockCache_Block_Dummy_Messages extends Mage_Core_Block_Messages
