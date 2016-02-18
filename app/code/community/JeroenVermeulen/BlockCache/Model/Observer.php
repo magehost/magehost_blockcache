@@ -235,7 +235,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             /** @noinspection PhpUndefinedMethodInspection */
             $block->setCacheTags( $cacheTags );
 
-            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/tags') ) {
+            if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/tags') && class_exists('Zend_Log') ) {
                 $message = sprintf( 'Block %s Tags %s', $cacheKey, $this->logTags($cacheTags) );
                 $message .= $this->getLogSuffix();
                 Mage::log( $message, Zend_Log::INFO, self::TAGS_LOG_FILE );
@@ -392,7 +392,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
             }
         }
 
-        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/flushes') ) {
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/flushes') && class_exists('Zend_Log') ) {
             $message = 'Cache flush.  Tags:' . $this->logTags($oldTags,$prefix);
             if ( $changed ) {
                 $message .= '  AfterFilter:' . $this->logTags($tags,$prefix);
@@ -414,7 +414,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
      */
     public function cacheMiss( $observer ) {
         $id = $observer->getId();
-        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/misses') ) {
+        if ( Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/logging/misses') && class_exists('Zend_Log') ) {
             $message = 'Cache miss.  Id:' . $id;
             $message .= $this->getLogSuffix();
             Mage::log( $message, Zend_Log::INFO, self::MISS_LOG_FILE );
