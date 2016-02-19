@@ -15,7 +15,7 @@
 <config>
     <modules>
         <jeroenvermeulen_blockcache>
-            <version>1.15.3</version>
+            <version>1.15.4</version>
         </jeroenvermeulen_blockcache>
     </modules>
     <global>
@@ -134,12 +134,24 @@
         <menu>
             <system>
                 <children>
-                    <!-- URL:  http://[MAGROOT]/admin/jv_blockcache/flush/key/xxxxxxxxxxx/ -->
-                    <jv_blockcache_flush>
-                        <title>JV: Flush URL from BlockCache</title>
-                        <action>adminhtml/jv_blockcache/flush</action>
+                    <jv_blockcache>
+                        <title>JeroenVermeulen BlockCache</title>
                         <sort_order>90</sort_order>
-                    </jv_blockcache_flush>
+                        <children>
+                            <!-- URL:  http://[MAGROOT]/admin/jv_blockcache/flush/key/xxxxxxxxxxx/ -->
+                            <jv_blockcache_config>
+                                <title>Configuration</title>
+                                <action>adminhtml/system_config/edit/section/jeroenvermeulen_blockcache</action>
+                                <sort_order>10</sort_order>
+                            </jv_blockcache_config>
+                            <!-- URL:  http://[MAGROOT]/admin/jv_blockcache/flush/key/xxxxxxxxxxx/ -->
+                            <jv_blockcache_flush>
+                                <title>Flush URL from BlockCache</title>
+                                <action>adminhtml/jv_blockcache/flush</action>
+                                <sort_order>20</sort_order>
+                            </jv_blockcache_flush>
+                        </children>
+                    </jv_blockcache>
                 </children>
             </system>
         </menu>
