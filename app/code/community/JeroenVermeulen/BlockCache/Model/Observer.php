@@ -87,8 +87,11 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         $filterUrl     = $this->getFilterUrl();
 
         if ( ! Mage::getStoreConfigFlag(self::CONFIG_SECTION.'/general/cache_when_url_param')
-             && ( false !== strpos($filterUrl,'?') ) ) {
-            // Caching of page with url param disabled in config, and this page has them.
+             && ( false !== strpos($filterUrl,'?') ||
+                  'amshopby' == Mage::app()->getRequest()->getModuleName() ) ) {
+            // Caching of page with url parameters is disabled in config.
+            // This request has URL params or is a request processed by Amasty Shopby.
+            // These requests would normally have parameters, Amasty turns them into natural URLs.
             return;
         }
 
