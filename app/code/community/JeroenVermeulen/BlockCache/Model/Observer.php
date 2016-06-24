@@ -357,7 +357,7 @@ class JeroenVermeulen_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
         }
         if ( !empty($_SERVER['SCRIPT_FILENAME']) ) {
             $baseScript = basename($_SERVER['SCRIPT_FILENAME']);
-            if ( 'n98-magerun.phar' == $baseScript || 'n98'  == $baseScript ) {
+            if ( 'n98-magerun.phar' == $baseScript || 'n98-magerun' == $baseScript || 'n98'  == $baseScript ) {
                 // We will always allow N98 Magerun
                 $doFilter = false;
             }
