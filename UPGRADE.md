@@ -12,7 +12,7 @@ Using [Modman](https://github.com/colinmollenhour/modman):
 * Install new extension<br />
   `modman clone --copy --force https://github.com/magehost/magehost_blockcache.git`
 * In Magento Admin: Flush Cache Storage
-* Restore configuration via: System > Configuration > ADVANCED > MageHost BlockCache
+* Restore configuration via: _System > Configuration > ADVANCED > MageHost BlockCache_
 
 ### Upgrade from older MageHost_BlockCache version
 
