@@ -1,3 +1,5 @@
+# Installation Manual
+
 This installation manual explains how to use `Cm_Cache_Backend_File` based caching.
 If you have experience with Redis cache, you will understand how to do it for Redis.
 
