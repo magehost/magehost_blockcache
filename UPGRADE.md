@@ -4,13 +4,14 @@
 
 Using [Modman](https://github.com/colinmollenhour/modman):
 
-    # 1. Replace old extension copy by symlinks (if installed using --force)
-    modman deploy --force jeroenvermeulen-blockcache
-    # 2. Remove old extension
-    modman remove jeroenvermeulen-blockcache
-    # 3. Install new extension
-    modman clone --copy --force https://github.com/magehost/magehost_blockcache.git
-    # 4. Clean cache
+1. Replace old extension copy by symlinks (if installed using --force)
+  `modman deploy --force jeroenvermeulen-blockcache`
+* Remove old extension
+  `modman remove jeroenvermeulen-blockcache`
+* In Magento Admin: Flush Cache Storage
+* Install new extension
+  `modman clone --copy --force https://github.com/magehost/magehost_blockcache.git`
+* In Magento Admin: Flush Cache Storage
 
 ### Upgrade from older MageHost_BlockCache version
 
