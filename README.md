@@ -7,8 +7,8 @@ This extension is meant to speed up shops which are not running on Varnish.
 
 ### Installation
 
-[Please follow this manual.](https://github.com/magehost/magehost_blockcache/blob/master/INSTALL.md)
-[Upgrade from JeroenVermeulen BlockCache](https://github.com/magehost/magehost_blockcache/blob/master/UPGRADE.md)
+* [Please follow this manual.](https://github.com/magehost/magehost_blockcache/blob/master/INSTALL.md)
+* [Upgrade from JeroenVermeulen BlockCache](https://github.com/magehost/magehost_blockcache/blob/master/UPGRADE.md)
 
 ### Config Settings:
 
