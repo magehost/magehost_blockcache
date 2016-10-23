@@ -41,7 +41,9 @@ class MageHost_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_First
         if ( empty($goodBackEnds) ) {
             $message .= 'ERROR:';
             $message .= '<br />' . $this->__("This extension requires one of these classes to exist: '%s'", join($or,$dependClasses));
-        } elseif ( ! in_array( $currentBackEnd, $goodBackEnds ) ) {
+        }
+        $currentBackendGood = in_array( $currentBackEnd, $goodBackEnds );
+        if ( ! $currentBackendGood ) {
             $message .= 'ERROR:';
             $message .= '<br />' . $this->__("This extension requires cache backend: '%s'", join($or,$goodBackEnds) );
             $message .= '<br />' . $this->__("Current setting: '%s'", $currentBackEnd);
@@ -69,12 +71,26 @@ Please update your <code style="font-weight: normal;">app/etc/local.xml</code>, 
 EOF;
             }
         }
+
         if ( !empty($message) ) {
             $result.= sprintf( '<ul class="messages"><li class="error-msg"><ul><li><span>%s</span></li></ul></li></ul>', $message );
         }
+
+        $cache = Mage::app()->getCache();
+        if ( $cache->getBackend() instanceof Cm_Cache_Backend_File ) {
+            $result .= sprintf( '<p>Cache is stored on disk. Disk is <b>%d</b>%% full.</p>',
+                Mage::app()->getCache()->getFillingPercentage() );
+        }
+        if ( $cache->getBackend() instanceof Cm_Cache_Backend_Redis ) {
+            $result .= sprintf( '<p>Cache is stored in memory via Redis. Redis is <b>%d</b>%% full.</p>',
+                Mage::app()->getCache()->getFillingPercentage() );
+        }
+
         $result .= sprintf( '<p>%s<br />%s</p>',
                             $this->__( 'Most settings have direct affect.' ),
                             $this->__( 'Settings which affect cache tags have no effect on already cached blocks.' ) );
+        ;
+
         $result .= parent::_getHeaderHtml( $element );
         return $result;
     }

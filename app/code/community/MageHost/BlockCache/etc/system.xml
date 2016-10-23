@@ -496,7 +496,7 @@
                     </fields>
                 </custom_5>
                 <flushes translate="label comment" module="magehost_blockcache">
-                    <label>Cache Flushes</label>
+                    <label>Allow / Ignore Cache Flushes</label>
                     <comment>These settings do not affect: <em>System &gt; Cache Management</em></comment>
                     <sort_order>1000</sort_order>
                     <show_in_default>1</show_in_default>

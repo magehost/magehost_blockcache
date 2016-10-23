@@ -21,7 +21,7 @@ class MageHost_BlockCache_Block_Adminhtml_System_Config_Form_Fieldset_Logging
      * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
-    public function _getHeaderCommentHtml( Varien_Data_Form_Element_Abstract $element ) {
+    public function _getHeaderCommentHtml( $element ) {
         $result = '';
         $message = '';
         if ( ! Mage::getStoreConfigFlag('dev/log/active') ) {

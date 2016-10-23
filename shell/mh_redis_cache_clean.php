@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-$mageRoot = dirname(dirname(__FILE__));
+$mageRoot = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
 /** @noinspection PhpIncludeInspection */
 require $mageRoot . '/lib/Credis/Client.php';
 
