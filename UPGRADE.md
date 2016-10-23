@@ -17,4 +17,5 @@ Using [Modman](https://github.com/colinmollenhour/modman):
 
 Using [Modman](https://github.com/colinmollenhour/modman):
 
-    modman update magehost_blockcache
+1. `modman update magehost_blockcache`
+* In Magento Admin: Flush Cache Storage
