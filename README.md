@@ -1,7 +1,7 @@
 ## MageHost_BlockCache
 Performance improvement by caching big blocks in Magento.
 
-**We are sorry but we cannot offer customer support for this extension, and it is provided "as-is" for free. We use it at a number of shops and it works well.**
+**We are sorry but we can only offer customer support for this extension to [MagentoHosting.pro](https://magentohosting.pro) customers. To others it is provided "as-is" for free.**
 
 This extension is meant to speed up shops which are not running on Varnish.
 
