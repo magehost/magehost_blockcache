@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  JeroenVermeulen_BlockCache
+  MageHost_BlockCache
 
   DISCLAIMER
 
   Do not edit or add to this file if you wish to upgrade this Module to
   newer versions in the future.
 
-  @category     JeroenVermeulen
-  @package      JeroenVermeulen_BlockCache
-  @copyright    Copyright (c) 2014 Jeroen Vermeulen (http://www.jeroenvermeulen.eu)
+  @category     MageHost
+  @package      MageHost_BlockCache
+  @copyright    Copyright (c) 2014 MagentoHosting.pro (https://www.magentohosting.pro)
 -->
 <!--suppress XmlUnboundNsPrefix -->
 <config>
     <modules>
-        <JeroenVermeulen_BlockCache>
+        <MageHost_BlockCache>
             <active>true</active>
             <codePool>community</codePool>
             <depends>
                 <Mage_Catalog/>
             </depends>
-        </JeroenVermeulen_BlockCache>
+        </MageHost_BlockCache>
     </modules>
 </config>

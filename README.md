@@ -1,4 +1,4 @@
-## JeroenVermeulen_BlockCache
+## MageHost_BlockCache
 Performance improvement by caching big blocks in Magento.
 
 **We are sorry but we cannot offer customer support for this extension, and it is provided "as-is" for free. We use it at a number of shops and it works well.**
@@ -7,11 +7,11 @@ This extension is meant to speed up shops which are not running on Varnish.
 
 ### Installation
 
-[Please follow this manual.](https://github.com/jeroenvermeulen/jeroenvermeulen-blockcache/wiki/Installation-Manual)
+[Please follow this manual.](https://github.com/magehost/magehost_blockcache/wiki/Installation-Manual)
 
 ### Config Settings:
 
-`System > Configuration > ADVANCED > JeroenVermeulen BlockCache`
+`System > Configuration > ADVANCED > MageHost BlockCache`
 
 ### Cache Big Blocks
 This Magento Extension adds functionality to cache these blocks which are normally not cached in Magento:

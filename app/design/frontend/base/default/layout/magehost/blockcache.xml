@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MageHost_BlockCache
+
+  DISCLAIMER
+
+  Do not edit or add to this file if you wish to upgrade this Module to
+  newer versions in the future.
+
+  @category     MageHost
+  @package      MageHost_BlockCache
+  @copyright    Copyright (c) 2014 MagentoHosting.pro (https://www.magentohosting.pro)
+-->
+<!--suppress XmlUnboundNsPrefix -->
+<layout>
+    <magehost_blockcache_product_list>
+        <reference name="category.products">
+            <action method="setMessagesBlock" ifconfig="magehost_blockcache/category_page/enable_messages_fix">
+                <block helper="magehost_blockcache/data/getMessagesBlock"/>
+            </action>
+            <action method="unsetChild" ifconfig="magehost_blockcache/category_page/enable_messages_fix">
+                <alias>messages</alias>
+            </action>
+        </reference>
+        <reference name="content">
+            <action method="insert" ifconfig="magehost_blockcache/category_page/enable_messages_fix">
+                <blockName>messages</blockName>
+                <siblingName>category.products</siblingName>
+                <after>0</after>
+            </action>
+        </reference>
+    </magehost_blockcache_product_list>
+
+    <catalog_category_default>
+        <update handle="magehost_blockcache_product_list"/>
+    </catalog_category_default>
+
+    <catalog_category_layered>
+        <update handle="magehost_blockcache_product_list"/>
+    </catalog_category_layered>
+
+    <catalog_product_view>
+        <reference name="product.info">
+            <action method="unsetChild" ifconfig="magehost_blockcache/product_detail/enable_messages_fix">
+                <alias>messages</alias>
+            </action>
+        </reference>
+        <reference name="content">
+            <action method="insert" ifconfig="magehost_blockcache/product_detail/enable_messages_fix">
+                <blockName>messages</blockName>
+                <siblingName>product.info</siblingName>
+                <after>0</after>
+            </action>
+        </reference>
+    </catalog_product_view>
+</layout>

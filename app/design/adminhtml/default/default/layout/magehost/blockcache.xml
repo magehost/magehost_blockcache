@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--suppress XmlUnboundNsPrefix -->
+<layout>
+    <adminhtml_magehost_blockcache_flush>
+        <reference name="content">
+            <block type="magehost_blockcache/adminhtml_flush_form"
+                   template="magehost/blockcache/flush_form.phtml" />
+        </reference>
+    </adminhtml_magehost_blockcache_flush>
+</layout>

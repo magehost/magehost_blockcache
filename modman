@@ -1,11 +1,12 @@
-## JeroenVermeulen_BlockCache Extension - Performance Improvement by better block caching in Magento CE
+## MageHost_BlockCache Extension - Performance Improvement by better block caching in Magento CE
+## Copyright MagentoHosting.pro / MagentoHosting.pro
 
-app/etc/modules/JeroenVermeulen_BlockCache.xml                              app/etc/modules/JeroenVermeulen_BlockCache.xml
-app/code/community/JeroenVermeulen/BlockCache/                              app/code/community/JeroenVermeulen/BlockCache/
-app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml      app/design/frontend/base/default/layout/jeroenvermeulen/blockcache.xml
-app/design/adminhtml/default/default/layout/jeroenvermeulen/blockcache.xml  app/design/adminhtml/default/default/layout/jeroenvermeulen/blockcache.xml
-app/design/adminhtml/default/default/template/jeroenvermeulen/blockcache/   app/design/adminhtml/default/default/template/jeroenvermeulen/blockcache/
-app/code/community/MageHost/Cm/Cache/Backend/File.php                       app/code/community/MageHost/Cm/Cache/Backend/File.php
-app/code/community/MageHost/Cm/Cache/Backend/Redis.php                      app/code/community/MageHost/Cm/Cache/Backend/Redis.php
-app/code/community/Cm/Cache/Backend/File.php                                app/code/community/Cm/Cache/Backend/File.php
-shell/jv_redis_cache_clean.php                                              shell/jv_redis_cache_clean.php
+app/etc/modules/MageHost_BlockCache.xml                              app/etc/modules/MageHost_BlockCache.xml
+app/code/community/MageHost/BlockCache/                              app/code/community/MageHost/BlockCache/
+app/design/frontend/base/default/layout/magehost/blockcache.xml      app/design/frontend/base/default/layout/magehost/blockcache.xml
+app/design/adminhtml/default/default/layout/magehost/blockcache.xml  app/design/adminhtml/default/default/layout/magehost/blockcache.xml
+app/design/adminhtml/default/default/template/magehost/blockcache/   app/design/adminhtml/default/default/template/magehost/blockcache/
+app/code/community/MageHost/Cm/Cache/Backend/File.php                app/code/community/MageHost/Cm/Cache/Backend/File.php
+app/code/community/MageHost/Cm/Cache/Backend/Redis.php               app/code/community/MageHost/Cm/Cache/Backend/Redis.php
+app/code/community/Cm/Cache/Backend/File.php                         app/code/community/Cm/Cache/Backend/File.php
+shell/mh_redis_cache_clean.php                                       shell/mh_redis_cache_clean.php

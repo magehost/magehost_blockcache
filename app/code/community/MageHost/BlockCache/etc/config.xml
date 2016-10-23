@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MageHost_BlockCache
+
+  DISCLAIMER
+
+  Do not edit or add to this file if you wish to upgrade this Module to
+  newer versions in the future.
+
+  @category     MageHost
+  @package      MageHost_BlockCache
+  @copyright    Copyright (c) 2016 MagentoHosting.pro (https://www.magentohosting.pro)
+-->
+<!--suppress XmlUnboundNsPrefix, CheckTagEmptyBody -->
+<config>
+    <modules>
+        <magehost_blockcache>
+            <version>1.15.6</version>
+        </magehost_blockcache>
+    </modules>
+    <global>
+        <blocks>
+            <magehost_blockcache>
+                <class>MageHost_BlockCache_Block</class>
+            </magehost_blockcache>
+        </blocks>
+        <models>
+            <magehost_blockcache>
+                <class>MageHost_BlockCache_Model</class>
+            </magehost_blockcache>
+        </models>
+        <helpers>
+            <magehost_blockcache>
+                <class>MageHost_BlockCache_Helper</class>
+            </magehost_blockcache>
+        </helpers>
+        <events>
+            <controller_front_init_before>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>controllerFrontInitBefore</method>
+                    </magehost_blockcache>
+                </observers>
+            </controller_front_init_before>
+            <magehost_clean_backend_cache_before>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>cleanBackendCache</method>
+                    </magehost_blockcache>
+                </observers>
+            </magehost_clean_backend_cache_before>
+            <magehost_cache_miss_mh>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>cacheMiss</method>
+                    </magehost_blockcache>
+                </observers>
+            </magehost_cache_miss_mh>
+            <magehost_cache_save_block>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>cacheSave</method>
+                    </magehost_blockcache>
+                </observers>
+            </magehost_cache_save_block>
+            <clean_catalog_images_cache_after>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>cleanCatalogImagesCacheAfter</method>
+                    </magehost_blockcache>
+                </observers>
+            </clean_catalog_images_cache_after>
+        </events>
+    </global>
+    <frontend>
+        <layout>
+            <updates>
+                <magehost_blockcache>
+                    <file>magehost/blockcache.xml</file>
+                </magehost_blockcache>
+            </updates>
+        </layout>
+        <events>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>coreBlockAbstractToHtmlBefore</method>
+                    </magehost_blockcache>
+                </observers>
+            </core_block_abstract_to_html_before>
+            <controller_front_send_response_before>
+                <observers>
+                    <magehost_blockcache>
+                        <type>singleton</type>
+                        <class>magehost_blockcache/observer</class>
+                        <method>controllerFrontSendResponseBefore</method>
+                    </magehost_blockcache>
+                </observers>
+            </controller_front_send_response_before>
+        </events>
+    </frontend>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <!-- URL:  http://[MAGROOT]/admin/[CONTROLLER]/[ACTION]/key/xxxxxxxxxxx/ -->
+                        <MageHost_BlockCache after="Mage_Adminhtml">MageHost_BlockCache_Adminhtml</MageHost_BlockCache>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <magehost_blockcache module="magehost_blockcache">
+                    <file>magehost/blockcache.xml</file>
+                </magehost_blockcache>
+            </updates>
+        </layout>
+        <menu>
+            <system>
+                <children>
+                    <magehost_blockcache>
+                        <title>MageHost BlockCache</title>
+                        <sort_order>90</sort_order>
+                        <children>
+                            <!-- URL:  http://[MAGROOT]/admin/magehost_blockcache/flush/key/xxxxxxxxxxx/ -->
+                            <magehost_blockcache_config>
+                                <title>Configuration</title>
+                                <action>adminhtml/system_config/edit/section/magehost_blockcache</action>
+                                <sort_order>10</sort_order>
+                            </magehost_blockcache_config>
+                            <!-- URL:  http://[MAGROOT]/admin/magehost_blockcache/flush/key/xxxxxxxxxxx/ -->
+                            <magehost_blockcache_flush>
+                                <title>Flush URL from BlockCache</title>
+                                <action>adminhtml/magehost_blockcache/flush</action>
+                                <sort_order>20</sort_order>
+                            </magehost_blockcache_flush>
+                        </children>
+                    </magehost_blockcache>
+                </children>
+            </system>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <magehost_blockcache_flush>
+                                    <title>MageHost: Flush URL</title>
+                                </magehost_blockcache_flush>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <default>
+        <magehost_blockcache>
+            <general>
+                <enable_formkey_fix>1</enable_formkey_fix>
+                <cache_when_customer_logged_in>1</cache_when_customer_logged_in>
+                <remove_url_param>utm_source
+utm_medium
+utm_campaign
+gclid
+cx
+ie
+cof
+siteurl</remove_url_param>
+                <cache_when_url_param>0</cache_when_url_param>
+            </general>
+            <logging>
+                <misses>0</misses>
+                <flushes>0</flushes>
+                <tags>0</tags>
+            </logging>
+            <category_page>
+                <enable_cache>1</enable_cache>
+                <lifetime>604800</lifetime>
+                <enable_messages_fix>1</enable_messages_fix>
+            </category_page>
+            <product_detail>
+                <enable_cache>1</enable_cache>
+                <lifetime>604800</lifetime>
+                <enable_messages_fix>1</enable_messages_fix>
+                <add_category_tag>0</add_category_tag>
+            </product_detail>
+            <cms_page>
+                <enable_cache>1</enable_cache>
+                <lifetime>604800</lifetime>
+            </cms_page>
+            <layered_navigation>
+                <enable_cache>1</enable_cache>
+                <lifetime>604800</lifetime>
+            </layered_navigation>
+            <cms_block>
+                <enable_cache>0</enable_cache>
+                <lifetime>604800</lifetime>
+            </cms_block>
+            <custom_1>
+                <instanceof></instanceof>
+                <enable_cache>0</enable_cache>
+                <lifetime>604800</lifetime>
+            </custom_1>
+            <custom_2>
+                <instanceof></instanceof>
+                <enable_cache>0</enable_cache>
+                <lifetime>604800</lifetime>
+            </custom_2>
+            <custom_3>
+                <instanceof></instanceof>
+                <enable_cache>0</enable_cache>
+                <lifetime>604800</lifetime>
+            </custom_3>
+            <custom_4>
+                <instanceof></instanceof>
+                <enable_cache>0</enable_cache>
+                <lifetime>604800</lifetime>
+            </custom_4>
+            <custom_5>
+                <instanceof></instanceof>
+                <enable_cache>0</enable_cache>
+                <lifetime>604800</lifetime>
+            </custom_5>
+            <flushes>
+                <catalog_category>1</catalog_category>
+                <catalog_product>1</catalog_product>
+                <cms_page>1</cms_page>
+                <cms_block>1</cms_block>
+                <translate>0</translate>
+                <store>0</store>
+                <website>0</website>
+                <block_html>0</block_html>
+                <mage>0</mage>
+                <_without_tags>0</_without_tags>
+            </flushes>
+            <cache_warmer>
+                <user_agent>Cache Warmer</user_agent>
+                <refresh_on_visit>0</refresh_on_visit>
+            </cache_warmer>
+        </magehost_blockcache>
+    </default>
+</config>
