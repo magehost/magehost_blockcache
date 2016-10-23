@@ -8,14 +8,15 @@ Using [Modman](https://github.com/colinmollenhour/modman):
   `modman deploy --force jeroenvermeulen-blockcache`
 * Remove old extension<br />
   `modman remove jeroenvermeulen-blockcache`
-* In Magento Admin: Flush Cache Storage
+* In Magento Admin: _Flush Cache Storage_
 * Install new extension<br />
   `modman clone --copy --force https://github.com/magehost/magehost_blockcache.git`
 * In Magento Admin: Flush Cache Storage
+* Restore configuration via: System > Configuration > ADVANCED > MageHost BlockCache
 
 ### Upgrade from older MageHost_BlockCache version
 
 Using [Modman](https://github.com/colinmollenhour/modman):
 
 1. `modman update --copy --force magehost_blockcache`
-* In Magento Admin: Flush Cache Storage
+* In Magento Admin: _Flush Cache Storage_
