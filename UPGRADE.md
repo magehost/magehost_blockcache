@@ -4,12 +4,12 @@
 
 Using [Modman](https://github.com/colinmollenhour/modman):
 
-    # Replace old extension copy by symlinks (if installed using --force)
+    # 1. Replace old extension copy by symlinks (if installed using --force)
     modman deploy --force jeroenvermeulen-blockcache
-    # Remove old extension
+    # 2. Remove old extension
     modman remove jeroenvermeulen-blockcache
-    # Install new extension
-    modman install --copy --force https://github.com/magehost/magehost_blockcache.git
+    # 3. Install new extension
+    modman clone --copy --force https://github.com/magehost/magehost_blockcache.git
 
 ### Upgrade from older MageHost_BlockCache version
 
