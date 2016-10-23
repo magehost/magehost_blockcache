@@ -10,6 +10,7 @@ Using [Modman](https://github.com/colinmollenhour/modman):
     modman remove jeroenvermeulen-blockcache
     # 3. Install new extension
     modman clone --copy --force https://github.com/magehost/magehost_blockcache.git
+    # 4. Clean cache
 
 ### Upgrade from older MageHost_BlockCache version
 
