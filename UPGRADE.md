@@ -8,10 +8,10 @@ Using [Modman](https://github.com/colinmollenhour/modman):
   `modman deploy --force jeroenvermeulen-blockcache`
 * Remove old extension<br />
   `modman remove jeroenvermeulen-blockcache`
-* In Magento Admin: _Flush Cache Storage_
+* In Magento Admin: _Flush Cache Storage_ or via [N98](https://github.com/netz98/n98-magerun): `n98-magerun.phar cache:flush`
 * Install new extension<br />
   `modman clone --copy --force https://github.com/magehost/magehost_blockcache.git`
-* In Magento Admin: Flush Cache Storage
+* In Magento Admin: _Flush Cache Storage_ or via [N98](https://github.com/netz98/n98-magerun): `n98-magerun.phar cache:flush`
 * Restore configuration via: _System > Configuration > ADVANCED > MageHost BlockCache_
 
 ### Upgrade from older MageHost_BlockCache version
