@@ -1,8 +1,9 @@
 ## Installation Manual for the MageHost_BlockCache extension 
 
 Install methods:
-[Just copy to Magento repo](#user-content-just-copy-to-magento-repo)
-[Git submodule + N98](#user-content-git-submodule--n98)
+
+* [Just copy to Magento repo](#user-content-just-copy-to-magento-repo)
+* [Git submodule + N98](#user-content-git-submodule--n98)
 
 ## Just copy to Magento repo
 
