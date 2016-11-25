@@ -125,14 +125,23 @@ class MageHost_BlockCache_Model_Observer extends Mage_Core_Model_Abstract
                 $matches = explode("\n",$matches);
                 foreach( $matches as $match ) {
                     $match = trim($match);
+                    $found = false;
                     if ( empty($match) ) {
                         continue;
                     }
-                    if ( false !== strpos($match,'/') ) {
-                        $match = Mage::getConfig()->getBlockClassName($match);
+                    if ( preg_match('|\.phtml$|i',$match) ) {
+                        $found = ( $found || preg_match( '|'.preg_quote($match,'|').'$|', $block->getTemplate() ) );
+                    } else {
+                        $matchClass = $match;
+                        if ( false !== strpos($matchClass,'/') ) {
+                            $matchClass = Mage::getConfig()->getBlockClassName($match);
+                        }
+                        $found = ( $found || ( !empty($matchClass) && $block instanceof $matchClass ) );
+                        $found = ( $found || $match == $block->getNameInLayout() );
                     }
-                    if ( !empty($match) && $block instanceof $match ) {
+                    if ( $found ) {
                         $blockGroup = constant( 'self::BLOCK_GROUP_CUSTOM_'.$c );
+                        break;
                     }
                 }
             }
