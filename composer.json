@@ -1,0 +1,16 @@
+{
+  "name":"magehost/magehost_blockcache",
+  "type":"magento-module",
+  "license":"OSL-3.0",
+  "homepage":"https://github.com/magehost/magehost_blockcache",
+  "description":"Performance improvement by caching big blocks in Magento.",
+  "authors":[
+    {
+      "name":"MagentoHosting.pro - Jeroen Vermeulen",
+      "email":"jeroen@magehost.pro"
+    }
+  ],
+  "require":{
+    "magento-hackathon/magento-composer-installer":"*"
+  }
+}
