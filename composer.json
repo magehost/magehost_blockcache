@@ -11,7 +11,9 @@
     }
   ],
   "require":{
-    "magento-hackathon/magento-composer-installer":"*"
-    "magehost/magehost_cm_cache_backend":"*"
+    "magento-hackathon/magento-composer-installer":"*",
+    "magehost/magehost_cm_cache_backend":"*",
+    "colinmollenhour/cache-backend-redis":"*",
+    "colinmollenhour/cache-backend-file":"*"
   }
 }
