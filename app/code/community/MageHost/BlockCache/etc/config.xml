@@ -14,9 +14,9 @@
 <!--suppress XmlUnboundNsPrefix, CheckTagEmptyBody -->
 <config>
     <modules>
-        <magehost_blockcache>
-            <version>1.17.0</version>
-        </magehost_blockcache>
+        <MageHost_BlockCache>
+            <version>1.17.1</version>
+        </MageHost_BlockCache>
     </modules>
     <global>
         <blocks>
